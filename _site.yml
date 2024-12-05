@@ -1,0 +1,10 @@
+name: "NYC Community Gardens"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "About"
+    
+output:
+  html_document:
+    theme: lumen
