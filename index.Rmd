@@ -1,5 +1,5 @@
 ---
-title: "Green Spaces in the Concrete Jungle:                           Community Gardens in NYC"
+title: "Green Spaces in the Concrete Jungle:Community Gardens in NYC"
 output: 
   html_document:
     toc: true
@@ -10,3 +10,15 @@ output:
 
 # About
 Info about gardens in NYC
+
+# Our Project
+Details about what is on our site
+
+[Flora and Fauna](florafauna.html)
+
+[Eco-Friendly Practices](ecofriendlytab.html)
+
+[Garden Amenities](gardenamenitiestab.html)
+
+# Site Creators
+Link to a tab about us maybe?

@@ -7,7 +7,7 @@ output:
     theme: lumen
 ---
 
-```{r setup, include=FALSE}
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 #loading libraries
 library(readr)
 library(tidyverse)
@@ -17,9 +17,8 @@ library(leaflet)
 library(crosstalk)
 library(rvest)
 library(httr)
-```
+library(plotly)
 
-```{r, include=FALSE}
 #loading datasets
 garden_info = 
   GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") |> 
@@ -42,9 +41,7 @@ site_visits =
   GET("http://data.cityofnewyork.us/resource/xqbk-beh5.csv") |>
   content("parsed") |>
   janitor::clean_names()
-```
 
-```{r, include = FALSE}
 #merging and cleaning data for analysis of eco-friendly practices
 site_visits_eco_friendly = site_visits |>
   select(parksid, inspectionid, rainharvesting, composting, aquaponics, solarpanels) |>
@@ -62,9 +59,7 @@ eco_friendly_df = eco_friendly_df |>
   "Aquaponics" = sum(aquaponics),
   "Solarpanels" = sum(solarpanels),
   )
-```
 
-```{r Data Visualization}
 #Histogram: Overall Distribution of Eco-Friendly Practices Across Boroughs
 #reshaping data to plot 
 eco_friendly_tidy <- eco_friendly_df |>
@@ -74,7 +69,7 @@ eco_friendly_tidy <- eco_friendly_df |>
                values_to = "Count")
 
 #plotting the multipart histogram 
-ggplot(eco_friendly_tidy, aes(x = borough, y = Count, fill = Practice)) +
+plot2 = ggplot(eco_friendly_tidy, aes(x = borough, y = Count, fill = Practice)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     title = "Distribution of Eco-Friendly Practices Across Boroughs",
@@ -87,9 +82,11 @@ ggplot(eco_friendly_tidy, aes(x = borough, y = Count, fill = Practice)) +
     name = "Eco-Friendly Practices", 
     discrete = TRUE
   )
+
+ggplotly(plot2)
 ``` 
 
-```{r}
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #Interactive Map: Gardens of NYC  
 map_data <- eco_friendly_df |>
   select(
@@ -108,7 +105,7 @@ map_data <- eco_friendly_df |>
     )
   )
 
-leaflet(map_data) |>
+map2 = leaflet(map_data) |>
   addTiles() |>
   setView(
     lng = -74.006,  # Longitude of NYC center
@@ -123,6 +120,8 @@ leaflet(map_data) |>
     radius = 6,
     fillOpacity = 0.8
   )
+
+map2
 ```
 
 #Chi-Square Test of independence on association between borough and presence of eco-friendly practices 

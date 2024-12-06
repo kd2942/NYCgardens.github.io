@@ -3,12 +3,11 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "About"
     - text: "Flora and Fauna"
       href: florafaunatab.html
     - text: "Eco-Friendly Practices"
       href: ecofriendlytab.html
-    - text: "Garden Ameneties"
+    - text: "Garden Amenities"
       href: gardenamenitiestab.html
     - icon: fa-envelope fa-lg
       href: mailto:<kd2942@cumc.columbia.edu>

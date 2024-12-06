@@ -6,19 +6,15 @@ output:
     toc_float: true
     theme: lumen
 ---
-```{r setup, include=FALSE}
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 library(readr)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(stringr)
 library(httr)
+library(plotly)
 options(scipen = 999)  # Turn off scientific notation globally
-
-```
-
-
-```{r}
 
 gardeninfo =  
   GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") %>% 
@@ -52,7 +48,6 @@ garden_merged[duplicated(garden_merged) | duplicated(garden_merged, fromLast = T
 garden_merged = garden_merged[!duplicated(garden_merged), ]
 
 
-
 #creating amenity count table
 amenity_count = garden_merged %>%
   pivot_longer(cols = c(open_lawn_or_communal_area, murals, farmers_market, pond, food), names_to = "Amenity", values_to = "True_False") %>% 
@@ -75,13 +70,14 @@ amenity_count_borough = garden_merged %>%
 table1 = amenity_count_borough %>% select(borough, total_amenities) %>% unique() %>% 
   knitr::kable(col.names = c("Borough", "Total Amenities"),
                label = "Total Number of Garden Amenities by Borough")
-```
 
+table1
+```
 
 DATA VIZ 1
  histogram of the number of gardens with each of the features: open lawn/communal area, murals, pond, farmer’s market, food
-```{r}
-plot1 =  amenity_count %>% 
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+plot3 =  amenity_count %>% 
   mutate(Amenity = recode(Amenity,
                           "farmers_market" = "Farmer's Market",
                           "food" = "Food",
@@ -97,13 +93,14 @@ plot1 =  amenity_count %>%
   theme(panel.background = element_rect(fill = "transparent")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-plot1
+ggplotly(plot3)
 ```
+
 DATA VIZ 2
 Amenity Type by borough, facet histogram
-```{r}
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 
-plot2 = amenity_count_borough %>%
+plot5 = amenity_count_borough %>%
   mutate(Amenity = recode(Amenity,
                           "farmers_market" = "Farmer's Market",
                           "food" = "Food",
@@ -118,13 +115,13 @@ plot2 = amenity_count_borough %>%
   theme(panel.background = element_rect(fill = "transparent"))
 
 
-plot2
+ggplotly(plot5)
 ```
 
 DATA VIZ 3
 Income Distribution Dot Plot
 
-```{r}
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #importing and tidying income dataset
 
 income = read_csv("./censusincome2024.csv") %>% janitor::clean_names()
@@ -164,15 +161,14 @@ income_borough = income_borough %>% mutate(
   upper_margin = (median_income+margin_of_error)
 )
 
-
 #income dsitribution dot plot with MoE
-plot3 = income_borough %>% 
+plot4 = income_borough %>% 
   ggplot(aes(x= borough, y = median_income)) +
   geom_point() +
   geom_errorbar(aes(ymax = upper_margin, ymin = lower_margin, width = 0.1)) +
   theme_classic()
 
-plot3
+ggplotly(plot4)
 ```
 
 

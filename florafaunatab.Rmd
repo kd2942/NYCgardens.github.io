@@ -6,17 +6,23 @@ output:
     toc_float: true
     theme: lumen
 ---
+# **Plants and Animals in New York City's Gardens** 
+Community gardens provide many benefits to New York City and its residents. They provide an opportunity to escape from the chaos of the city and enter a serene space. Their trees and plants promote cleaner air, which is invaluable in a city with a large population and high levels of air pollution. Some gardens have animals such as chickens and fish (and turtles, like the ones pictured below at Ninth Street Community Garden at Avenue C). While they are a fun feature, they also serve as an opportunity for education and urban agriculture.
 
-```{r, include=FALSE}
+<img src="./turtlesgardens.jpg" style="width:40%">
+
+
+# **Map of NYC Garden Flora and Fauna**
+Want to see some trees, chickens, or turtles? Check out this map to see which gardens in the city have what you're interested in! 
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #loading libraries
 library(tidyverse)
 library(rvest)
 library(httr)
 library(leaflet)
 library(crosstalk)
-```
+library(plotly)
 
-```{r, include = FALSE}
 #loading datasets
 garden_info = 
   GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") |> 
@@ -39,9 +45,7 @@ site_visits =
   GET("http://data.cityofnewyork.us/resource/xqbk-beh5.csv") |>
   content("parsed") |>
   janitor::clean_names()
-```
 
-```{r, include = FALSE}
 ##merging the data sets for flora and fauna analysis
 #cleaning site visit data set so it only includes variables involved in flora and fauna 
 site_visits_flora_fauna = site_visits |>
@@ -50,9 +54,7 @@ site_visits_flora_fauna = site_visits |>
 
 flora_fauna_df= 
   inner_join(garden_info, site_visits_flora_fauna, by = "parksid") 
-```
 
-```{r, include = FALSE}
 flora_fauna_df = flora_fauna_df |>
   group_by(borough) |>
   mutate(
@@ -62,11 +64,53 @@ flora_fauna_df = flora_fauna_df |>
   "Chickens" = sum(chickens),
   "Pond" = sum(pond),
   "Fish in Pond" = sum(fishinpond),
-  "Turtles" = sum(turtles)
+  "Turtles" = sum(turtles))
+
+#Interactive Map: Flora and Fauna in Gardens of NYC 
+map_data <- flora_fauna_df |>
+  select(
+    garden_name = gardenname, 
+    latitude = lat, 
+    longitude = lon, 
+    Location = address,
+    borough, chickens, fruittrees, streettrees, treesingarden, pond, fishinpond, turtles
+  ) |>
+  mutate(
+    floraandfauna = paste0(
+      ifelse(chickens > 0, "Chickens, ", ""),
+      ifelse(fruittrees > 0, "Fruit Trees, ", ""),
+      ifelse(streettrees > 0, "Street Trees, ", ""),
+      ifelse(treesingarden > 0, "Trees in Garden, ", ""),
+      ifelse(pond > 0, "Pond, ", ""),
+      ifelse(fishinpond > 0, "Fish in Pond, ", ""),
+       ifelse(turtles > 0, "Turtles, ", "")
+    )
   )
+
+map1 = leaflet(map_data) |>
+  addTiles() |>
+  setView(
+    lng = -74.006,  # Longitude of NYC center
+    lat = 40.7128,  # Latitude of NYC center
+    zoom = 11      # Adjust zoom level (10–13 works well for NYC
+  ) |>
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    label = ~paste(garden_name, Location, floraandfauna),
+    popup = ~paste0("<b>", garden_name, "</b><br>Borough: ", borough, "<br>FloraandFauna: ", floraandfauna),
+    color = "purple",
+    radius = 6,
+    fillOpacity = 0.8
+  )
+
+map1
 ```
 
-```{r multi-series bar chart reflecting distribution of flora and fauna features by borough}
+# **Flora and Fauna by Borough**
+Which borough has the most chickens in their community gardens? Are there more garden fruit trees in Manhattan or the Bronx? The multi-series bar chart allows for a comparison of the 5 boroughs through the flora and fauna present in their community gardens. 
+
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+#multi-series bar chart reflecting distribution of flora and fauna features by borough
 flora_fauna_tidy = 
    pivot_longer(
     flora_fauna_df, 
@@ -74,7 +118,7 @@ flora_fauna_tidy =
     names_to = "item", 
     values_to = "total")
 
-ggplot(flora_fauna_tidy, aes(x = borough, y= total, fill=item)) + 
+plot1 = ggplot(flora_fauna_tidy, aes(x = borough, y= total, fill=item)) + 
     geom_bar(position="dodge", stat="identity") +
   labs(title = "Distribution of Flaura + Fauna Features in NYC Gardens",
     x = "Borough",
@@ -86,7 +130,11 @@ ggplot(flora_fauna_tidy, aes(x = borough, y= total, fill=item)) +
     name = "Flora/Fauna Feature", 
     discrete = TRUE
   )
+
+ggplotly(plot1)
 ```
+
+Among the 5 boroughs, there are varying amounts of space for community gardens. The benefits of features like trees, which promote clean air and provide shade, may not be equally distributed across the boroughs as a result. To understand how the types of trees 
 
 ```{r logistic regression for presence of types of trees by borough, controlling for sidewalk area}
 fit_logistic_df =
@@ -126,44 +174,5 @@ fit_logistic_streettrees |>
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3)
-```
-
-```{r}
-#Interactive Map: Flora and Fauna in Gardens of NYC 
-map_data <- flora_fauna_df |>
-  select(
-    garden_name = gardenname, 
-    latitude = lat, 
-    longitude = lon, 
-    Location = address,
-    borough, chickens, fruittrees, streettrees, treesingarden, pond, fishinpond, turtles
-  ) |>
-  mutate(
-    floraandfauna = paste0(
-      ifelse(chickens > 0, "Chickens, ", ""),
-      ifelse(fruittrees > 0, "Fruit Trees, ", ""),
-      ifelse(streettrees > 0, "Street Trees, ", ""),
-      ifelse(treesingarden > 0, "Trees in Garden, ", ""),
-      ifelse(pond > 0, "Pond, ", ""),
-      ifelse(fishinpond > 0, "Fish in Pond, ", ""),
-       ifelse(turtles > 0, "Turtles, ", "")
-    )
-  )
-
-leaflet(map_data) |>
-  addTiles() |>
-  setView(
-    lng = -74.006,  # Longitude of NYC center
-    lat = 40.7128,  # Latitude of NYC center
-    zoom = 11      # Adjust zoom level (10–13 works well for NYC
-  ) |>
-  addCircleMarkers(
-    ~longitude, ~latitude,
-    label = ~paste(garden_name, Location, floraandfauna),
-    popup = ~paste0("<b>", garden_name, "</b><br>Borough: ", borough, "<br>FloraandFauna: ", floraandfauna),
-    color = "green",
-    radius = 6,
-    fillOpacity = 0.8
-  )
 ```
 
