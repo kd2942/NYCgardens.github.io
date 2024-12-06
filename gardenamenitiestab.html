@@ -36,14 +36,6 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
-<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
-<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
-<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -385,123 +377,29 @@ library(ggplot2)
 library(stringr)
 library(httr)
 library(plotly)
+library(nnet)
 options(scipen = 999)  # Turn off scientific notation globally
+gardeninfo = read_csv(&quot;./GreenThumb_Garden_Info.csv&quot;) %&gt;% janitor::clean_names()
+gardenamenities = read_csv(&quot;./GreenThumb_Site_Visits.csv&quot;) %&gt;% janitor::clean_names()
 
-gardeninfo =  
-  GET(&quot;http://data.cityofnewyork.us/resource/p78i-pat6.csv&quot;) %&gt;% 
-  content(&quot;parsed&quot;) %&gt;% 
-  janitor::clean_names()
-gardenamenities = 
-  GET(&quot;http://data.cityofnewyork.us/resource/xqbk-beh5.csv&quot;) %&gt;%
-  content(&quot;parsed&quot;) %&gt;% 
-  janitor::clean_names()
-
-info_tidy = gardeninfo %&gt;% select(borough, gardenname, parksid, zipcode, congressionaldist) %&gt;% 
+info_tidy = gardeninfo %&gt;% select(borough, gardenname, parksid, status, juris) %&gt;% 
   mutate(borough = recode(borough,
                           &quot;B&quot; = &quot;Brooklyn&quot;,
                           &quot;X&quot; = &quot;Bronx&quot;,
                           &quot;M&quot; = &quot;Manhattan&quot;,
                           &quot;Q&quot; = &quot;Queens&quot;,
                           &quot;R&quot; = &quot;Staten Island&quot;))
-amenities_tidy = gardenamenities %&gt;% 
-rename(
-  open_lawn_or_communal_area = openlawnorcommunalarea,
-  farmers_market = farmersmarket,
-  inspection_id = inspectionid) %&gt;% select(parksid, open_lawn_or_communal_area, murals, farmers_market, pond, food, inspection_id)
+amenities_tidy = gardenamenities %&gt;% select(parks_id, open_lawn_or_communal_area, murals, farmers_market, pond, food, inspection_id) %&gt;% rename(parksid = parks_id)
 
 #merging data
-garden_merged = full_join(amenities_tidy, info_tidy, by= &quot;parksid&quot;) </code></pre>
-<pre><code>## Warning in full_join(amenities_tidy, info_tidy, by = &quot;parksid&quot;): Detected an unexpected many-to-many relationship between `x` and `y`.
-## ℹ Row 127 of `x` matches multiple rows in `y`.
-## ℹ Row 169 of `y` matches multiple rows in `x`.
-## ℹ If a many-to-many relationship is expected, set `relationship = &quot;many-to-many&quot;` to
-##   silence this warning.</code></pre>
-<pre class="r"><code>#removing duplicates
-info_tidy %&gt;% select(parksid) %&gt;% duplicated()</code></pre>
-<pre><code>##   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [49] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [85] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [97] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [109] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [121] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [133] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [145] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [157] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [169] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [181] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [193] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE
-## [205] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [217] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [229] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [241] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [253] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [265] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [277] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [289] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [301] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE
-## [313] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [325] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [337] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [349] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [361] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [373] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [385] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [397] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [409] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [421] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [433] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [445] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [457] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [469] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [481] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [493] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [505] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [517] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [529] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [541] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [553] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [565] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [577] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [589] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [601] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE
-## [613] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [625] FALSE FALSE FALSE FALSE FALSE</code></pre>
-<pre class="r"><code>amenities_tidy %&gt;% select(parksid) %&gt;% unique()</code></pre>
-<pre><code>## # A tibble: 355 × 1
-##    parksid    
-##    &lt;chr&gt;      
-##  1 B544-GT001 
-##  2 M397-GT001 
-##  3 M331-GT002 
-##  4 M297A-GT001
-##  5 X277-GT001 
-##  6 B535-GT001 
-##  7 B575-GT001 
-##  8 B553-GT001 
-##  9 M313-GT001 
-## 10 M293-GT001 
-## # ℹ 345 more rows</code></pre>
-<pre class="r"><code>garden_merged[duplicated(garden_merged) | duplicated(garden_merged, fromLast = TRUE), ]</code></pre>
-<pre><code>## # A tibble: 8 × 11
-##   parksid open_lawn_or_communa…¹ murals farmers_market pond  food  inspection_id
-##   &lt;chr&gt;   &lt;lgl&gt;                  &lt;lgl&gt;  &lt;lgl&gt;          &lt;lgl&gt; &lt;lgl&gt;         &lt;dbl&gt;
-## 1 M341-G… TRUE                   TRUE   FALSE          FALSE TRUE            220
-## 2 M341-G… TRUE                   TRUE   FALSE          FALSE TRUE            220
-## 3 B400-G… TRUE                   TRUE   TRUE           FALSE TRUE            266
-## 4 B400-G… TRUE                   TRUE   TRUE           FALSE TRUE            266
-## 5 Q045-G… TRUE                   FALSE  FALSE          FALSE TRUE            348
-## 6 Q045-G… TRUE                   FALSE  FALSE          FALSE TRUE            348
-## 7 BGT038  NA                     NA     NA             NA    NA               NA
-## 8 BGT038  NA                     NA     NA             NA    NA               NA
-## # ℹ abbreviated name: ¹​open_lawn_or_communal_area
-## # ℹ 4 more variables: borough &lt;chr&gt;, gardenname &lt;chr&gt;, zipcode &lt;dbl&gt;,
-## #   congressionaldist &lt;dbl&gt;</code></pre>
-<pre class="r"><code>garden_merged = garden_merged[!duplicated(garden_merged), ]
+garden_merged = full_join(amenities_tidy, info_tidy, by= &quot;parksid&quot;, relationship = &quot;many-to-many&quot;) 
+
+#removing duplicates
+#info_tidy %&gt;% select(parksid) %&gt;% duplicated()
+#amenities_tidy %&gt;% select(parksid) %&gt;% unique()
+#garden_merged[duplicated(garden_merged) | duplicated(garden_merged, fromLast = TRUE), ]
+garden_merged = garden_merged[!duplicated(garden_merged), ]
+
 
 
 #creating amenity count table
@@ -526,6 +424,7 @@ amenity_count_borough = garden_merged %&gt;%
 table1 = amenity_count_borough %&gt;% select(borough, total_amenities) %&gt;% unique() %&gt;% 
   knitr::kable(col.names = c(&quot;Borough&quot;, &quot;Total Amenities&quot;),
                label = &quot;Total Number of Garden Amenities by Borough&quot;)
+  
 
 table1</code></pre>
 <table>
@@ -561,7 +460,7 @@ table1</code></pre>
 <p>DATA VIZ 1 histogram of the number of gardens with each of the
 features: open lawn/communal area, murals, pond, farmer’s market,
 food</p>
-<pre class="r"><code>plot3 =  amenity_count %&gt;% 
+<pre class="r"><code>plot1 =  amenity_count %&gt;% 
   mutate(Amenity = recode(Amenity,
                           &quot;farmers_market&quot; = &quot;Farmer&#39;s Market&quot;,
                           &quot;food&quot; = &quot;Food&quot;,
@@ -577,11 +476,10 @@ food</p>
   theme(panel.background = element_rect(fill = &quot;transparent&quot;)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggplotly(plot3)</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-2de4a251a670ec928bba" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-2de4a251a670ec928bba">{"x":{"data":[{"orientation":"v","width":0.89999999999999991,"base":0,"x":[1],"y":[24],"text":"Amenity: Farmer's Market<br />total_gardens:  24<br />Amenity: Farmer's Market","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(251,180,174,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Farmer's Market","legendgroup":"Farmer's Market","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.90000000000000013,"base":0,"x":[2],"y":[296],"text":"Amenity: Food<br />total_gardens: 296<br />Amenity: Food","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(179,205,227,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Food","legendgroup":"Food","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.90000000000000036,"base":0,"x":[3],"y":[78],"text":"Amenity: Murals<br />total_gardens:  78<br />Amenity: Murals","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(204,235,197,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Murals","legendgroup":"Murals","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.90000000000000036,"base":0,"x":[4],"y":[268],"text":"Amenity: Open Lawn/Communal Area<br />total_gardens: 268<br />Amenity: Open Lawn/Communal Area","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(222,203,228,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Open Lawn/Communal Area","legendgroup":"Open Lawn/Communal Area","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.90000000000000036,"base":0,"x":[5],"y":[25],"text":"Amenity: Pond<br />total_gardens:  25<br />Amenity: Pond","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(254,217,166,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Pond","legendgroup":"Pond","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":99.378264189967908,"l":43.105022831050235},"plot_bgcolor":"transparent","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Number of Gardens by Type","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Farmer's Market","Food","Murals","Open Lawn/Communal Area","Pond"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Farmer's Market","Food","Murals","Open Lawn/Communal Area","Pond"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Amenity Type","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-14.800000000000001,310.80000000000001],"tickmode":"array","ticktext":["0","100","200","300"],"tickvals":[0,100,200.00000000000003,300],"categoryorder":"array","categoryarray":["0","100","200","300"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Total Number of Gardens","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Amenity","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c47d711980f9":{"x":{},"y":{},"fill":{},"type":"bar"}},"cur_data":"c47d711980f9","visdat":{"c47d711980f9":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>DATA VIZ 2 Amenity Type by borough, facet histogram</p>
-<pre class="r"><code>plot5 = amenity_count_borough %&gt;%
+plot1</code></pre>
+<p><img src="gardenamenitiestab_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+DATA VIZ 2 Amenity Type by borough, facet histogram</p>
+<pre class="r"><code>plot2 = amenity_count_borough %&gt;%
   mutate(Amenity = recode(Amenity,
                           &quot;farmers_market&quot; = &quot;Farmer&#39;s Market&quot;,
                           &quot;food&quot; = &quot;Food&quot;,
@@ -596,9 +494,8 @@ ggplotly(plot3)</code></pre>
   theme(panel.background = element_rect(fill = &quot;transparent&quot;))
 
 
-ggplotly(plot5)</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-b82c6212002e0761b79e" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-b82c6212002e0761b79e">{"x":{"data":[{"orientation":"v","width":[0.22500000000000009,0.18000000000000016,0.17999999999999972,0.17999999999999972,0.22499999999999964],"base":[0,0,0,0,0],"x":[0.66250000000000009,1.6400000000000001,2.6400000000000001,3.6400000000000001,4.6624999999999996],"y":[2,62,11,66,3],"text":["Amenity: Farmer's Market<br />num_amenities:   2<br />borough: Bronx","Amenity: Food<br />num_amenities:  62<br />borough: Bronx","Amenity: Murals<br />num_amenities:  11<br />borough: Bronx","Amenity: Open Lawn/Communal Area<br />num_amenities:  66<br />borough: Bronx","Amenity: Pond<br />num_amenities:   3<br />borough: Bronx"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(179,226,205,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Bronx","legendgroup":"Bronx","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.22500000000000009,0.18000000000000016,0.17999999999999972,0.17999999999999972,0.22499999999999964],"base":[0,0,0,0,0],"x":[0.88749999999999996,1.8200000000000001,2.8199999999999998,3.8199999999999998,4.8875000000000002],"y":[17,147,38,121,8],"text":["Amenity: Farmer's Market<br />num_amenities:  17<br />borough: Brooklyn","Amenity: Food<br />num_amenities: 147<br />borough: Brooklyn","Amenity: Murals<br />num_amenities:  38<br />borough: Brooklyn","Amenity: Open Lawn/Communal Area<br />num_amenities: 121<br />borough: Brooklyn","Amenity: Pond<br />num_amenities:   8<br />borough: Brooklyn"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(253,205,172,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Brooklyn","legendgroup":"Brooklyn","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.22500000000000009,0.17999999999999994,0.17999999999999972,0.17999999999999972,0.22499999999999964],"base":[0,0,0,0,0],"x":[1.1125,2,3,4,5.1124999999999998],"y":[1,65,24,64,13],"text":["Amenity: Farmer's Market<br />num_amenities:   1<br />borough: Manhattan","Amenity: Food<br />num_amenities:  65<br />borough: Manhattan","Amenity: Murals<br />num_amenities:  24<br />borough: Manhattan","Amenity: Open Lawn/Communal Area<br />num_amenities:  64<br />borough: Manhattan","Amenity: Pond<br />num_amenities:  13<br />borough: Manhattan"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(203,213,232,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Manhattan","legendgroup":"Manhattan","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.22500000000000009,0.17999999999999972,0.17999999999999972,0.17999999999999972,0.22499999999999964],"base":[0,0,0,0,0],"x":[1.3374999999999999,2.1799999999999997,3.1799999999999997,4.1799999999999997,5.3375000000000004],"y":[4,19,4,15,1],"text":["Amenity: Farmer's Market<br />num_amenities:   4<br />borough: Queens","Amenity: Food<br />num_amenities:  19<br />borough: Queens","Amenity: Murals<br />num_amenities:   4<br />borough: Queens","Amenity: Open Lawn/Communal Area<br />num_amenities:  15<br />borough: Queens","Amenity: Pond<br />num_amenities:   1<br />borough: Queens"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(244,202,228,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Queens","legendgroup":"Queens","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.17999999999999972,0.17999999999999972,0.17999999999999972],"base":[0,0,0],"x":[2.3599999999999999,3.3599999999999999,4.3600000000000003],"y":[3,1,2],"text":["Amenity: Food<br />num_amenities:   3<br />borough: Staten Island","Amenity: Murals<br />num_amenities:   1<br />borough: Staten Island","Amenity: Open Lawn/Communal Area<br />num_amenities:   2<br />borough: Staten Island"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(230,245,201,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Staten Island","legendgroup":"Staten Island","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":99.378264189967908,"l":43.105022831050235},"plot_bgcolor":"transparent","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Farmer's Market","Food","Murals","Open Lawn/Communal Area","Pond"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Farmer's Market","Food","Murals","Open Lawn/Communal Area","Pond"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Number of Amenities","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-7.3500000000000005,154.34999999999999],"tickmode":"array","ticktext":["0","50","100","150"],"tickvals":[0,50,100,150],"categoryorder":"array","categoryarray":["0","50","100","150"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Type of Amenity","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"borough","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c47de275c1b":{"x":{},"y":{},"fill":{},"type":"bar"}},"cur_data":"c47de275c1b","visdat":{"c47de275c1b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+plot2</code></pre>
+<p><img src="gardenamenitiestab_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>DATA VIZ 3 Income Distribution Dot Plot</p>
 <pre class="r"><code>#importing and tidying income dataset
 
@@ -639,16 +536,16 @@ income_borough = income_borough %&gt;% mutate(
   upper_margin = (median_income+margin_of_error)
 )
 
+
 #income dsitribution dot plot with MoE
-plot4 = income_borough %&gt;% 
+plot3 = income_borough %&gt;% 
   ggplot(aes(x= borough, y = median_income)) +
   geom_point() +
   geom_errorbar(aes(ymax = upper_margin, ymin = lower_margin, width = 0.1)) +
   theme_classic()
 
-ggplotly(plot4)</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-505f46a9ee1240543f77" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-505f46a9ee1240543f77">{"x":{"data":[{"x":[1,2,3,4,5],"y":[46838,76912,101078,81929,95543],"text":["borough: Bronx<br />median_income:  46838","borough: Brooklyn<br />median_income:  76912","borough: Manhattan<br />median_income: 101078","borough: Queens<br />median_income:  81929","borough: Staten Island<br />median_income:  95543"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5],"y":[46838,76912,101078,81929,95543],"text":["borough: Bronx<br />median_income:  46838<br />upper_margin:  48841<br />lower_margin: 44835<br />width: 0.5","borough: Brooklyn<br />median_income:  76912<br />upper_margin:  78742<br />lower_margin: 75082<br />width: 0.5","borough: Manhattan<br />median_income: 101078<br />upper_margin: 103660<br />lower_margin: 98496<br />width: 0.5","borough: Queens<br />median_income:  81929<br />upper_margin:  83771<br />lower_margin: 80087<br />width: 0.5","borough: Staten Island<br />median_income:  95543<br />upper_margin: 101704<br />lower_margin: 89382<br />width: 0.5"],"type":"scatter","mode":"lines","opacity":1,"line":{"color":"transparent"},"error_y":{"array":[2003,1830,2582,1842,6161],"arrayminus":[2003,1830,2582,1842,6161],"type":"data","width":3.2307692307692344,"symmetric":false,"color":"rgba(0,0,0,1)"},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":60.639269406392714},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Bronx","Brooklyn","Manhattan","Queens","Staten Island"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Bronx","Brooklyn","Manhattan","Queens","Staten Island"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"borough","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[41893.75,106601.25],"tickmode":"array","ticktext":["60000","80000","100000"],"tickvals":[60000,80000,100000],"categoryorder":"array","categoryarray":["60000","80000","100000"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"median_income","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"c47d32ea5147":{"x":{},"y":{},"type":"scatter"},"c47d357e266e":{"x":{},"y":{},"ymax":{},"ymin":{},"width":{}}},"cur_data":"c47d32ea5147","visdat":{"c47d32ea5147":["function (y) ","x"],"c47d357e266e":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+plot3</code></pre>
+<p><img src="gardenamenitiestab_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Poisson</p>
 <pre class="r"><code>#POISSON ANALYSIS
 #isolating total amenities per borough
@@ -663,31 +560,111 @@ poisson_model &lt;- glm(total_amenities ~ median_income,
                      family = poisson(link = &quot;log&quot;), 
                      data = poisson_df)
 
-table2 = summary(poisson_model)
+table2 = poisson_model %&gt;% broom::tidy() |&gt; 
+  mutate(OR = exp(estimate)) |&gt;
+  select(term, log_OR = estimate, OR, p.value) |&gt; 
+  knitr::kable()
+
 table2</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = total_amenities ~ median_income, family = poisson(link = &quot;log&quot;), 
-##     data = poisson_df)
-## 
-## Deviance Residuals: 
-##       1        2        3        4        5  
-##  -3.150   13.644    4.780   -9.195  -13.753  
-## 
-## Coefficients:
-##                   Estimate   Std. Error z value             Pr(&gt;|z|)    
-## (Intercept)    5.650887757  0.150903723  37.447 &lt; 0.0000000000000002 ***
-## median_income -0.000009172  0.000001897  -4.833           0.00000134 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for poisson family taken to be 1)
-## 
-##     Null deviance: 515.22  on 4  degrees of freedom
-## Residual deviance: 492.62  on 3  degrees of freedom
-## AIC: 527.28
-## 
-## Number of Fisher Scoring iterations: 5</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">log_OR</th>
+<th align="right">OR</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">5.6508878</td>
+<td align="right">284.5439597</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">median_income</td>
+<td align="right">-0.0000092</td>
+<td align="right">0.9999908</td>
+<td align="right">0.0000013</td>
+</tr>
+</tbody>
+</table>
+<p>Multinomial Regression</p>
+<pre class="r"><code>multinom_df = left_join(garden_merged, income_borough, by=&quot;borough&quot;) %&gt;% select(parksid, pond, status, juris, borough, median_income) %&gt;% 
+  filter(juris == &quot;DPR&quot;) %&gt;% 
+  filter(status == &quot;Active&quot; | status == &quot;Not GreenThumb&quot;) %&gt;%
+  filter(!(borough == &quot;Staten Island&quot;)) %&gt;% 
+  mutate(pond = ifelse(pond, &quot;Yes&quot;, &quot;No&quot;)) %&gt;% 
+  mutate(status = fct_relevel(status, &quot;Not GreenThumb&quot;)) %&gt;% 
+  mutate(borough = fct_relevel(borough, &quot;Bronx&quot;)) %&gt;% 
+  drop_na()
+
+#multinom_df %&gt;% select(status, juris)  %&gt;% group_by(status) %&gt;% count() 
+#multinom_df %&gt;% group_by(borough, pond) %&gt;% count() 
+
+
+multinom_model = nnet::multinom(pond ~ status + median_income + borough, data = multinom_df)</code></pre>
+<pre><code>## # weights:  7 (6 variable)
+## initial  value 241.215219 
+## iter  10 value 86.506329
+## final  value 86.085779 
+## converged</code></pre>
+<pre class="r"><code>table3 = multinom_model %&gt;% broom::tidy() |&gt; 
+  mutate(OR = exp(estimate)) |&gt;
+  select(term, log_OR = estimate, OR, p.value) |&gt; 
+  knitr::kable()
+
+
+table3</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">log_OR</th>
+<th align="right">OR</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">-1.5406990</td>
+<td align="right">0.2142313</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">statusActive</td>
+<td align="right">-1.5406990</td>
+<td align="right">0.2142313</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">median_income</td>
+<td align="right">-0.0000002</td>
+<td align="right">0.9999998</td>
+<td align="right">0.9305107</td>
+</tr>
+<tr class="even">
+<td align="left">boroughBrooklyn</td>
+<td align="right">0.1463642</td>
+<td align="right">1.1576177</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">boroughManhattan</td>
+<td align="right">1.2732599</td>
+<td align="right">3.5724794</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">boroughQueens</td>
+<td align="right">-0.0370497</td>
+<td align="right">0.9636282</td>
+<td align="right">0.0000000</td>
+</tr>
+</tbody>
+</table>
 
 
 
