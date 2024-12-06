@@ -146,16 +146,17 @@ eco_friendly_df |>
   chisq.test()
 ```
 
-#Logistic Regression Analyses modeling probability of a garden engaging ine ach eco-friendly practice based on borough
-```{r, message = FALSE, warnings = FALSE}
+#Logistic Regression Analyses modeling probability of a garden engaging in an eco-friendly practice based on borough
+```{r, message = FALSE, warning = FALSE}
 #logistic regression model for presence of eco-friendly practices by borough
 logistic_df =
   eco_friendly_df |>
-  select('rainharvesting', 'composting', 'solarpanels', 'borough') |>
-  drop_na() |>
+  select('rainharvesting', 'composting', 'aquaponics', 'solarpanels', 'borough') |>
+  drop_na()  |>
   mutate(
-    borough = fct_relevel(borough, "Manhattan")
-  )
+    borough = fct_relevel(borough, "Bronx")
+  ) |>
+  filter(borough != "Staten Island")
 
 #Rainharvesting 
 logistic_rainharvesting = 
@@ -179,7 +180,6 @@ logistic_composting |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3)
 
-
 #Solarpanels 
 logistic_solarpanels = 
   logistic_df |>
@@ -191,4 +191,6 @@ logistic_solarpanels |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3) 
 ``` 
+
+
 
