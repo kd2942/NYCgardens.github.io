@@ -1,5 +1,5 @@
 ---
-title: "Eco-Friendly Practices"
+title: "Garden Amenities"
 output: 
   html_document:
     toc: true
@@ -174,7 +174,7 @@ ggplotly(plot4)
 
 
 Poisson
-```{r}
+```{r, message = FALSE, warnings = FALSE}
 #POISSON ANALYSIS
 #isolating total amenities per borough
 total_borough_amenity = select(amenity_count_borough, borough, total_amenities)

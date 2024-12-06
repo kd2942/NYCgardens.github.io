@@ -147,7 +147,7 @@ eco_friendly_df |>
 ```
 
 #Logistic Regression Analyses modeling probability of a garden engaging ine ach eco-friendly practice based on borough
-```{r}
+```{r, message = FALSE, warnings = FALSE}
 #logistic regression model for presence of eco-friendly practices by borough
 logistic_df =
   eco_friendly_df |>
