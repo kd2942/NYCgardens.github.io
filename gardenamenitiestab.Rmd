@@ -188,6 +188,8 @@ poisson_model <- glm(total_amenities ~ median_income,
                      family = poisson(link = "log"), 
                      data = poisson_df)
 
-table2 = summary(poisson_model)
-table2
+table2 = poisson_model %>% broom::tidy() |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  knitr::kable()
 ```
