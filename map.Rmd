@@ -1,0 +1,73 @@
+---
+title: "NYC Garden Map"
+output: html_document
+date: "2024-12-06"
+---
+
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(leaflet)
+library(crosstalk)
+library(rvest)
+library(httr)
+library(plotly)
+
+garden_info = 
+  GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") |> 
+  content("parsed") |>
+  janitor::clean_names() |>
+  drop_na() |>
+   mutate(
+    borough = 
+      recode(
+        borough,
+        "B" = "Brooklyn",
+        "M" = "Manhattan",
+        "X" = "Bronx",
+        "R" = "Staten Island",
+        "Q" = "Queens"
+      )
+   )
+
+site_visits = 
+  GET("http://data.cityofnewyork.us/resource/xqbk-beh5.csv") |>
+  content("parsed") |>
+  janitor::clean_names()
+
+``` 
+```{r}
+site_visits_eco_friendly = site_visits |>
+  select(parksid, inspectionid)
+
+eco_friendly_df= 
+  inner_join(garden_info, site_visits_eco_friendly, by = "parksid") 
+
+map_data <- eco_friendly_df |>
+  select(
+    garden_name = gardenname, 
+    latitude = lat, 
+    longitude = lon, 
+    Location = address,
+    borough)
+
+maphome = leaflet(map_data) |>
+  addTiles() |>
+  setView(
+    lng = -74.006,  
+    lat = 40.7128,  
+    zoom = 11      
+  ) |>
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    label = ~paste(garden_name, Location, borough),
+    popup = ~paste0("<b>", garden_name, "</b><br>Borough: ", borough),
+    color = "green",
+    radius = 6,
+    fillOpacity = 0.8
+  )
+
+maphome
+```
