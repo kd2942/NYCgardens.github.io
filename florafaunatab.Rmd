@@ -55,7 +55,7 @@ site_visits_flora_fauna = site_visits |>
 flora_fauna_df= 
   inner_join(garden_info, site_visits_flora_fauna, by = "parksid") 
 
-flora_fauna_df = flora_fauna_df |>
+flora_fauna_group = flora_fauna_df |>
   group_by(borough) |>
   mutate(
   "Trees in Garden" = sum(treesingarden),
@@ -67,7 +67,7 @@ flora_fauna_df = flora_fauna_df |>
   "Turtles" = sum(turtles))
 
 #Interactive Map: Flora and Fauna in Gardens of NYC 
-map_data <- flora_fauna_df |>
+map_data <- flora_fauna_group |>
   select(
     garden_name = gardenname, 
     latitude = lat, 
@@ -113,7 +113,7 @@ Which borough has the most chickens in their community gardens? Are there more g
 #multi-series bar chart reflecting distribution of flora and fauna features by borough
 flora_fauna_tidy = 
    pivot_longer(
-    flora_fauna_df, 
+    flora_fauna_group, 
     "Trees in Garden":"Turtles",
     names_to = "item", 
     values_to = "total")
@@ -134,45 +134,58 @@ plot1 = ggplot(flora_fauna_tidy, aes(x = borough, y= total, fill=item)) +
 ggplotly(plot1)
 ```
 
-Among the 5 boroughs, there are varying amounts of space for community gardens. The benefits of features like trees, which promote clean air and provide shade, may not be equally distributed across the boroughs as a result. To understand how the types of trees 
+# **The Effect of Borough on Tree Presence**
+Among the 5 boroughs, there are varying amounts of space for community gardens. The benefits of features like trees, which promote clean air and provide shade, may not be equally distributed across the boroughs as a result. 
 
-```{r logistic regression for presence of types of trees by borough, controlling for sidewalk area}
+To understand how the presence of different types of trees differ across boroughs, a logistic regression was run for each tree type in the data set(trees in gardens, fruit trees, and street trees). The outcome was tree presence (1 for presence, 0 for absence), and the predictor variable was borough. As there was no variable for garden size in the data set, sidewalk area was included as a confounder because it was the closest representation of garden size and would be associated with tree presence (more space is likely associated with tree presence) and borough (boroughs with more space likely have larger gardens/ more (or less) sidewalk area). Brooklyn was the reference group for the borough variable because it has the largest amount of community gardens.  
+
+```{r logistic regression for presence of types of trees by borough, controlling for sidewalk area, message = FALSE, warnings=FALSE}
 fit_logistic_df =
   flora_fauna_df |>
-  select('treesingarden', 'fruittrees', 'streettrees', 'borough', 'totalsidewalkarea') |>
+  select('parksid','treesingarden', 'fruittrees', 'streettrees', 'borough', 'totalsidewalkarea') |>
   drop_na() |>
   mutate(
-    borough = fct_relevel(borough, "Manhattan")
+    borough = as.factor(borough),
+    borough = fct_relevel(borough, "Brooklyn")
   )
+```
 
+# _Logistic Regression Model: Trees in the Garden_
+```{r}
 fit_logistic_treesingarden = 
   fit_logistic_df |>
-  glm(treesingarden~ borough + totalsidewalkarea, data = _, family = binomial()) 
+  glm(treesingarden~ borough + totalsidewalkarea, data = _, family = binomial()) |>
+  broom::tidy() |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  knitr::kable(digits = 3)
 
+fit_logistic_treesingarden
+```
+
+# _Logistic Regression Model: Fruit Trees_
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_fruittrees = 
   fit_logistic_df |>
-  glm(fruittrees ~ borough + totalsidewalkarea, data = _, family = binomial())
+  glm(fruittrees ~ borough + totalsidewalkarea, data = _, family = binomial()) |>
+  broom::tidy() |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  knitr::kable(digits = 3)
 
+fit_logistic_fruittrees
+```
+
+# _Logistic Regression Model: Street Trees_
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_streettrees = 
   fit_logistic_df |>
-  glm(streettrees ~ borough + totalsidewalkarea, data = _, family = binomial())
-
-fit_logistic_treesingarden |> 
+  glm(streettrees ~ borough + totalsidewalkarea, data = _, family = binomial())|> 
   broom::tidy() |> 
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3)
 
-fit_logistic_fruittrees |> 
-  broom::tidy() |> 
-  mutate(OR = exp(estimate)) |>
-  select(term, log_OR = estimate, OR, p.value) |> 
-  knitr::kable(digits = 3)
-
-fit_logistic_streettrees |> 
-  broom::tidy() |> 
-  mutate(OR = exp(estimate)) |>
-  select(term, log_OR = estimate, OR, p.value) |> 
-  knitr::kable(digits = 3)
+fit_logistic_streettrees
 ```
 
