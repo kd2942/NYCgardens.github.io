@@ -14,6 +14,7 @@ How does the spread of eco-friendly practices differ by borough? Check out the h
 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 #loading libraries
+
 library(readr)
 library(tidyverse)
 library(dplyr)
@@ -23,6 +24,9 @@ library(crosstalk)
 library(rvest)
 library(httr)
 library(plotly)
+library(cvTools)
+library(modelr)
+library(mgcv)
 
 #loading datasets
 garden_info = 
