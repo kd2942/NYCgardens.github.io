@@ -130,7 +130,8 @@ map2 = leaflet(map_data) |>
 map2
 ```
 
-# **Statistical Analyses: The Association between Borough and Eco-Friendly Practices 
+
+# **Statistical Analyses: The Association between Borough and Eco-Friendly Practices**
 
 Statistical analyses included a chi-Square test of independence to examine the association between borough and the presence of eco-friendly practices, complemented by several logistic regression analyses to model the probability of a garden engaging in eco-friendly practices based on its borough. 
 
