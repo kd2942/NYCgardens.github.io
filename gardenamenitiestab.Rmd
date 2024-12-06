@@ -5,6 +5,10 @@ output:
     toc: true
     toc_float: true
     theme: lumen
+    knitr:
+    opts_chunk: 
+      message: false
+      warning: false
 ---
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 library(readr)
@@ -14,38 +18,29 @@ library(ggplot2)
 library(stringr)
 library(httr)
 library(plotly)
+library(nnet)
 options(scipen = 999)  # Turn off scientific notation globally
+gardeninfo = read_csv("./GreenThumb_Garden_Info.csv") %>% janitor::clean_names()
+gardenamenities = read_csv("./GreenThumb_Site_Visits.csv") %>% janitor::clean_names()
 
-gardeninfo =  
-  GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") %>% 
-  content("parsed") %>% 
-  janitor::clean_names()
-gardenamenities = 
-  GET("http://data.cityofnewyork.us/resource/xqbk-beh5.csv") %>%
-  content("parsed") %>% 
-  janitor::clean_names()
-
-info_tidy = gardeninfo %>% select(borough, gardenname, parksid, zipcode, congressionaldist) %>% 
+info_tidy = gardeninfo %>% select(borough, gardenname, parksid, status, juris) %>% 
   mutate(borough = recode(borough,
                           "B" = "Brooklyn",
                           "X" = "Bronx",
                           "M" = "Manhattan",
                           "Q" = "Queens",
                           "R" = "Staten Island"))
-amenities_tidy = gardenamenities %>% 
-rename(
-  open_lawn_or_communal_area = openlawnorcommunalarea,
-  farmers_market = farmersmarket,
-  inspection_id = inspectionid) %>% select(parksid, open_lawn_or_communal_area, murals, farmers_market, pond, food, inspection_id)
+amenities_tidy = gardenamenities %>% select(parks_id, open_lawn_or_communal_area, murals, farmers_market, pond, food, inspection_id) %>% rename(parksid = parks_id)
 
 #merging data
-garden_merged = full_join(amenities_tidy, info_tidy, by= "parksid") 
+garden_merged = full_join(amenities_tidy, info_tidy, by= "parksid", relationship = "many-to-many") 
 
 #removing duplicates
-info_tidy %>% select(parksid) %>% duplicated()
-amenities_tidy %>% select(parksid) %>% unique()
-garden_merged[duplicated(garden_merged) | duplicated(garden_merged, fromLast = TRUE), ]
+#info_tidy %>% select(parksid) %>% duplicated()
+#amenities_tidy %>% select(parksid) %>% unique()
+#garden_merged[duplicated(garden_merged) | duplicated(garden_merged, fromLast = TRUE), ]
 garden_merged = garden_merged[!duplicated(garden_merged), ]
+
 
 
 #creating amenity count table
@@ -70,14 +65,16 @@ amenity_count_borough = garden_merged %>%
 table1 = amenity_count_borough %>% select(borough, total_amenities) %>% unique() %>% 
   knitr::kable(col.names = c("Borough", "Total Amenities"),
                label = "Total Number of Garden Amenities by Borough")
+  
 
 table1
 ```
 
+
 DATA VIZ 1
  histogram of the number of gardens with each of the features: open lawn/communal area, murals, pond, farmer’s market, food
-```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
-plot3 =  amenity_count %>% 
+```{r}
+plot1 =  amenity_count %>% 
   mutate(Amenity = recode(Amenity,
                           "farmers_market" = "Farmer's Market",
                           "food" = "Food",
@@ -93,14 +90,13 @@ plot3 =  amenity_count %>%
   theme(panel.background = element_rect(fill = "transparent")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggplotly(plot3)
+plot1
 ```
-
 DATA VIZ 2
 Amenity Type by borough, facet histogram
-```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+```{r}
 
-plot5 = amenity_count_borough %>%
+plot2 = amenity_count_borough %>%
   mutate(Amenity = recode(Amenity,
                           "farmers_market" = "Farmer's Market",
                           "food" = "Food",
@@ -115,13 +111,13 @@ plot5 = amenity_count_borough %>%
   theme(panel.background = element_rect(fill = "transparent"))
 
 
-ggplotly(plot5)
+plot2
 ```
 
 DATA VIZ 3
 Income Distribution Dot Plot
 
-```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+```{r, message=FALSE}
 #importing and tidying income dataset
 
 income = read_csv("./censusincome2024.csv") %>% janitor::clean_names()
@@ -161,20 +157,21 @@ income_borough = income_borough %>% mutate(
   upper_margin = (median_income+margin_of_error)
 )
 
+
 #income dsitribution dot plot with MoE
-plot4 = income_borough %>% 
+plot3 = income_borough %>% 
   ggplot(aes(x= borough, y = median_income)) +
   geom_point() +
   geom_errorbar(aes(ymax = upper_margin, ymin = lower_margin, width = 0.1)) +
   theme_classic()
 
-ggplotly(plot4)
+plot3
 ```
 
 
 
 Poisson
-```{r, message = FALSE, warnings = FALSE}
+```{r}
 #POISSON ANALYSIS
 #isolating total amenities per borough
 total_borough_amenity = select(amenity_count_borough, borough, total_amenities)
@@ -192,4 +189,36 @@ table2 = poisson_model %>% broom::tidy() |>
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable()
+
+table2
+```
+
+
+Multinomial Regression
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+
+multinom_df = left_join(garden_merged, income_borough, by="borough") %>% select(parksid, pond, status, juris, borough, median_income) %>% 
+  filter(juris == "DPR") %>% 
+  filter(status == "Active" | status == "Not GreenThumb") %>%
+  filter(!(borough == "Staten Island")) %>% 
+  mutate(pond = ifelse(pond, "Yes", "No")) %>% 
+  mutate(status = fct_relevel(status, "Not GreenThumb")) %>% 
+  mutate(borough = fct_relevel(borough, "Bronx")) %>% 
+  drop_na()
+
+#multinom_df %>% select(status, juris)  %>% group_by(status) %>% count() 
+#multinom_df %>% group_by(borough, pond) %>% count() 
+
+
+multinom_model = nnet::multinom(pond ~ status + median_income + borough, data = multinom_df)
+
+
+
+table3 = multinom_model %>% broom::tidy() |> 
+  mutate(OR = exp(estimate)) |>
+  select(term, log_OR = estimate, OR, p.value) |> 
+  knitr::kable()
+
+
+table3
 ```
