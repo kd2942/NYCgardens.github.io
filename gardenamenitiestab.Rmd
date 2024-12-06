@@ -10,6 +10,9 @@ output:
       message: false
       warning: false
 ---
+
+A visit to a NYC garden means you may get to experience food, open lawns, murals, farmer's markets, or ponds, among other things. How exciting!
+Before we take a deeper dive, let's take a look at which boroughs have the greatest numbers of garden amenities.
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 library(readr)
 library(tidyverse)
@@ -69,10 +72,16 @@ table1 = amenity_count_borough %>% select(borough, total_amenities) %>% unique()
 
 table1
 ```
+Brooklyn leads with the greatest number of garden amenities! Go Brooklyn!
 
 
-DATA VIZ 1
- histogram of the number of gardens with each of the features: open lawn/communal area, murals, pond, farmer’s market, food
+
+
+
+## Looking At Different Amenities
+Let's check out how many gardens have each type of amenity.
+
+Here's a histogram of the number of gardens with each of the features: open lawn/communal area, murals, pond, farmer’s market, food.
 ```{r}
 plot1 =  amenity_count %>% 
   mutate(Amenity = recode(Amenity,
@@ -92,8 +101,15 @@ plot1 =  amenity_count %>%
 
 plot1
 ```
-DATA VIZ 2
-Amenity Type by borough, facet histogram
+It seems like food and an open lawn/communal area are the most popular types of garden amenities. Time to go have a picnic.
+
+
+
+
+
+## Garden Amenities Distribution by Borough
+Have you ever wondered which boroughs have the most garden amenities? We certainly did!
+Here is a histogram showing us the count of each amenity we can find in every borough.
 ```{r}
 
 plot2 = amenity_count_borough %>%
@@ -113,9 +129,15 @@ plot2 = amenity_count_borough %>%
 
 plot2
 ```
+Brooklyn leads in every garden amenity category, except for ponds. If you want to see a pond, go to Manhattan.
 
-DATA VIZ 3
-Income Distribution Dot Plot
+
+
+
+
+
+## What Does Money Have To Do With It?
+Below is a dot plot of median income in each borough, so we can see where each borough stands before we go into some regressions.
 
 ```{r, message=FALSE}
 #importing and tidying income dataset
@@ -161,16 +183,22 @@ income_borough = income_borough %>% mutate(
 #income dsitribution dot plot with MoE
 plot3 = income_borough %>% 
   ggplot(aes(x= borough, y = median_income)) +
-  geom_point() +
-  geom_errorbar(aes(ymax = upper_margin, ymin = lower_margin, width = 0.1)) +
+  geom_col(fill ="white", color = "black") +
+  geom_errorbar(aes(ymax = upper_margin, ymin = lower_margin, width = 0.5)) +
   theme_classic()
 
 plot3
 ```
 
+Manhattan has the greatest median income, while Bronx has the least. This will come in handy when we are analyzing how income is associated with garden amenities....
 
 
-Poisson
+
+
+
+## Poisson analysis
+### Looking at total amenities per borough and median income.
+We ran a Poisson regression model to investigate how median borough income might associate with the total number of amenities available in each borough. Our odds ratio of 1 shows that, to our surprise, median income may not have much of an effect of the number of amenities available in each borough. From an equity standpoint, this could be good news; lower income may not directly result in fewer garden amenities. 
 ```{r}
 #POISSON ANALYSIS
 #isolating total amenities per borough
@@ -194,7 +222,11 @@ table2
 ```
 
 
-Multinomial Regression
+## Multinomial Regression
+In our multinomial regression below, we evaluated median income, borough and garden status (an active GreenThumb garden or not a GreenThumb garden; as a reminder, GreenThumb is a garden maintenance program).
+
+We found that being in the GreenThumb program significantly decreases the odds of having garden ponds compared to those not in the program. Gardens in Manhattan and Brooklyn have higher odds of having ponds compared to other boroughs, while median income does not significantly influence the presence of garden ponds. Gardens in Queens have slightly lower odds of having garden ponds, but this difference is not statistically significant.
+
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 
 multinom_df = left_join(garden_merged, income_borough, by="borough") %>% select(parksid, pond, status, juris, borough, median_income) %>% 
