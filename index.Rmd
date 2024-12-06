@@ -9,16 +9,79 @@ output:
 <img src="./gardenpic.jpg" style="width:75%">
 
 # **About**
-Info about gardens in NYC
-"Through this program we also promote urban agriculture, connect gardeners to resources in their communities, and help to identify supportive community and school gardening policies.
 
-Urban agriculture is defined as growing food and raising animals in cities, accompanied by complementary activities such as processing and distributing food, collecting and reusing food waste and rainwater, and educating, organizing, and employing local residents. Some examples of urban agriculture include hydroponics, urban apiary, aquaponics, backyard chickens for egg production, and rooftop farming."
 
-# **Map of NYC Gardens**
-Garden map 
+# **Map of NYC's Community Gardens**
+Want to visit a community garden in your area? Or discover a green space in a new neighborhood? Check out the map below!
+
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(leaflet)
+library(crosstalk)
+library(rvest)
+library(httr)
+library(plotly)
+
+garden_info = 
+  GET("http://data.cityofnewyork.us/resource/p78i-pat6.csv") |> 
+  content("parsed") |>
+  janitor::clean_names() |>
+  drop_na() |>
+   mutate(
+    borough = 
+      recode(
+        borough,
+        "B" = "Brooklyn",
+        "M" = "Manhattan",
+        "X" = "Bronx",
+        "R" = "Staten Island",
+        "Q" = "Queens"
+      )
+   )
+
+site_visits = 
+  GET("http://data.cityofnewyork.us/resource/xqbk-beh5.csv") |>
+  content("parsed") |>
+  janitor::clean_names()
+
+site_visits_eco_friendly = site_visits |>
+  select(parksid, inspectionid)
+
+eco_friendly_df= 
+  inner_join(garden_info, site_visits_eco_friendly, by = "parksid") 
+
+map_data <- eco_friendly_df |>
+  select(
+    garden_name = gardenname, 
+    latitude = lat, 
+    longitude = lon, 
+    Location = address,
+    borough)
+
+maphome = leaflet(map_data) |>
+  addTiles() |>
+  setView(
+    lng = -74.006,  
+    lat = 40.7128,  
+    zoom = 11      
+  ) |>
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    label = ~paste(garden_name, Location, borough),
+    popup = ~paste0("<b>", garden_name, "</b><br>Borough: ", borough),
+    color = "green",
+    radius = 6,
+    fillOpacity = 0.8
+  )
+
+maphome
+```
 
 # **Our Project**
-Details about what is on our site
+New York City is infamously known as the concrete jungle with approximately 1 million structures distributed over an era of 778.2 km^2. However, unbeknownst to many, NYC offers more green space than any other major U.S. city. In fact, 99% of New Yorkers live within a 10-minute walk from a green space. Despite this, these areas are often overlooked due to the city's dense, industrial layout. Our team aims to enhance access to and awareness of these green spaces by documenting the location of every garden in NYC and highlighting their features, such as plant and animal life, available amenities, and environmentally friendly practices. We are creating a comprehensive resource to empower NYC residents with this valuable information. Check out our pages to learn more:
 
 [Flora and Fauna](florafaunatab.html)
 
@@ -37,4 +100,4 @@ _Other sources_:
 
 
 # **Site Creators**
-Link to a tab about us maybe?
+Kaylin De Silva (kd2942), Cristina Varela (cev2129), Alishah Khan (ak5098)

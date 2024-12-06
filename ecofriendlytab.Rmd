@@ -7,6 +7,11 @@ output:
     theme: lumen
 ---
 
+Community gardens in NYC can remain eco-friendly by participating in practices like composting, aquaponics, rain harvesting, and solar panels. This also provides an opportunity for community members and educational programs to participate in these practices and learn more about agricultural activities that support renewable waste and energy. These practices are another important aspect of urban agriculture and further emphasize the value of community gardens. 
+
+# **Overall Distribution of Eco-Friendly Practices Across Boroughs**
+How does the spread of eco-friendly practices differ by borough? Check out the histogram below to learn more! 
+
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
 #loading libraries
 library(readr)
@@ -86,6 +91,7 @@ plot2 = ggplot(eco_friendly_tidy, aes(x = borough, y = Count, fill = Practice)) 
 ggplotly(plot2)
 ``` 
 
+# **Map of Community Gardens with Eco-Friendly Practices**
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #Interactive Map: Gardens of NYC  
 map_data <- eco_friendly_df |>
@@ -124,8 +130,16 @@ map2 = leaflet(map_data) |>
 map2
 ```
 
-#Chi-Square Test of independence on association between borough and presence of eco-friendly practices 
-```{r}
+
+# **Statistical Analyses: The Association between Borough and Eco-Friendly Practices**
+
+Statistical analyses included a chi-Square test of independence to examine the association between borough and the presence of eco-friendly practices, complemented by several logistic regression analyses to model the probability of a garden engaging in eco-friendly practices based on its borough. 
+
+# _Chi-Square Test of independence on association between borough and presence of eco-friendly practices_
+
+A Chi-Square test of independence was conducted to investigate the association between borough and the presence of eco-friendly practices, aiming to determine whether the presence of these practices in a garden was independent of its borough. It was hypothesized that there would be a strong association between gardens practicing eco-friendly practices and borough. The results (X^2 = 153.11, p-value < 2.2e-16) indicate a strong association between eco-friendly gardens and the boroughs they are located in. 
+
+```{r, message = FALSE, warnings = FALSE, fig.keep = TRUE}
 #Creating new binary variable for eco-friendly practices 
 eco_friendly_df <- eco_friendly_df |>
   mutate(
@@ -136,7 +150,7 @@ eco_friendly_df <- eco_friendly_df |>
     )
   ) 
 
-eco_friendly_df |>
+table7 = eco_friendly_df |>
   mutate(
     eco_friendly = factor(eco_friendly),
     borough = factor(borough)
@@ -144,62 +158,63 @@ eco_friendly_df |>
   select(eco_friendly, borough) |>
   table() |>
   chisq.test()
+
+table7
 ```
 
-#Logistic Regression Analyses modeling probability of a garden engaging ine ach eco-friendly practice based on borough
-```{r, message = FALSE, warnings = FALSE}
+To further investigate, several logistic regression analyses were performed to model the probability of each eco-friendly practice being used by gardens based on the borough they are located in. It was hypothesized that there is an association between borough and gardens with eco-friendly practices. The specific findings for each analysis is as follows:  
+
+# _Logistic Regression Analyses modeling probability of a garden engaging in rain harvesting based on borough_
+
+```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #logistic regression model for presence of eco-friendly practices by borough
 logistic_df =
   eco_friendly_df |>
   select('rainharvesting', 'composting', 'aquaponics', 'solarpanels', 'borough') |>
-  drop_na() |>
+  drop_na()  |>
   mutate(
-    borough = fct_relevel(borough, "Manhattan")
-  )
+    borough = fct_relevel(borough, "Bronx")
+  ) |>
+  filter(borough != "Staten Island")
 
 #Rainharvesting 
 logistic_rainharvesting = 
   logistic_df |>
-  glm(rainharvesting~ borough, data = _, family = binomial())  
-
-logistic_rainharvesting |> 
+  glm(rainharvesting~ borough, data = _, family = binomial())|>
   broom::tidy() |> 
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3)
 
+logistic_rainharvesting
+``` 
+
+# _Logistic Regression Analyses modeling probability of a garden engaging in composting based on borough_
+
+```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Composting 
 logistic_composting = 
   logistic_df |>
-  glm(composting~ borough, data = _, family = binomial())  
-
-logistic_composting |> 
+  glm(composting~ borough, data = _, family = binomial()) |>
   broom::tidy() |> 
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3)
 
-#Aquaponics
-logistic_aquaponics = 
-  logistic_df |>
-  glm(aquaponics~ borough, data = _, family = binomial())  
+logistic_composting
+```
 
-logistic_aquaponics |> 
-  broom::tidy() |> 
-  mutate(OR = exp(estimate)) |>
-  select(term, log_OR = estimate, OR, p.value) |> 
-  knitr::kable(digits = 3)
-
-
+# _Logistic Regression Analyses modeling probability of a garden engaging in solar panels based on borough_
+```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Solarpanels 
 logistic_solarpanels = 
   logistic_df |>
-  glm(solarpanels~ borough, data = _, family = binomial())  
-
-logistic_solarpanels |> 
+  glm(solarpanels~ borough, data = _, family = binomial()) |> 
   broom::tidy() |> 
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
   knitr::kable(digits = 3) 
-``` 
+
+logistic_solarpanels
+```
 

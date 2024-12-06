@@ -262,6 +262,9 @@ $(document).ready(function () {
   <a href="ecofriendlytab.html">Eco-Friendly Practices</a>
 </li>
 <li>
+  <a href="learnmoretab.html">Learn More</a>
+</li>
+<li>
   <a href="mailto:&lt;kd2942@cumc.columbia.edu&gt;">
     <span class="fa fa-envelope fa-lg"></span>
      
@@ -298,7 +301,7 @@ $(document).ready(function () {
 
 <pre class="r"><code>gardeninfo = read_csv(&quot;./GreenThumb_Garden_Info.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 629 Columns: 27
-## ── Column specification ────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (16): address, borough, gardenname, juris, multipolygon, openhrsf, openh...
 ## dbl (11): assemblydist, communityboard, congressionaldist, coundist, policep...
@@ -307,7 +310,7 @@ $(document).ready(function () {
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>gardenamenities = read_csv(&quot;./GreenThumb_Site_Visits.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 357 Columns: 35
-## ── Column specification ────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (1): ParksID
 ## dbl  (5): InspectionID, TotalFenceLength, TotalSidewalkArea, TotalSidewalkLe...
@@ -329,8 +332,8 @@ garden_merged = full_join(amenities_tidy, info_tidy, by= &quot;parksid&quot;) </
 <pre><code>## Warning in full_join(amenities_tidy, info_tidy, by = &quot;parksid&quot;): Detected an unexpected many-to-many relationship between `x` and `y`.
 ## ℹ Row 127 of `x` matches multiple rows in `y`.
 ## ℹ Row 169 of `y` matches multiple rows in `x`.
-## ℹ If a many-to-many relationship is expected, set `relationship = &quot;many-to-many&quot;` to
-##   silence this warning.</code></pre>
+## ℹ If a many-to-many relationship is expected, set `relationship = &quot;many-to-many&quot;`
+##   to silence this warning.</code></pre>
 <pre class="r"><code>#removing duplicates
 info_tidy %&gt;% select(parksid) %&gt;% duplicated()</code></pre>
 <pre><code>##   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
@@ -486,7 +489,7 @@ plot2</code></pre>
 
 income = read_csv(&quot;./censusincome2024.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 47 Columns: 37
-## ── Column specification ────────────────────────────────────────────────────────────────
+## ── Column specification ──────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (34): Label (Grouping), Bronx County, New York!!Number!!Estimate, Bronx ...
 ## num  (3): Kings County, New York!!Median income (dollars)!!Estimate, Queens ...
