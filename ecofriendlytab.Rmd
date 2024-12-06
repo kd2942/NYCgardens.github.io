@@ -179,7 +179,7 @@ logistic_df =
   mutate(
     borough = fct_relevel(borough, "Bronx")
   ) |>
-  filter(borough != "Staten Island")
+  filter(!(borough=="Staten Island"))
 
 #Rainharvesting 
 logistic_rainharvesting = 
