@@ -11,9 +11,9 @@ Community gardens provide many benefits to New York City and its residents. They
 
 <img src="./turtlesgardens.jpg" style="width:60%">
 
-
 # **Map of NYC Garden Flora and Fauna**
 Want to see some trees, chickens, or turtles? Check out this map to see which gardens in the city have what you're interested in! 
+
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #loading libraries
 library(tidyverse)
@@ -137,7 +137,7 @@ ggplotly(plot1)
 # **The Effect of Borough on Tree Presence**
 Among the 5 boroughs, there are varying amounts of space for community gardens. The benefits of features like trees, which promote clean air and provide shade, may not be equally distributed across the boroughs as a result. 
 
-To understand how the presence of different types of trees differ across boroughs, a logistic regression was run for each tree type in the data set(trees in gardens, fruit trees, and street trees). The outcome was tree presence (1 for presence, 0 for absence), and the predictor variable was borough. As there was no variable for garden size in the data set, sidewalk area was included as a confounder because it was the closest representation of garden size and would be associated with tree presence (more space is likely associated with tree presence) and borough (boroughs with more space likely have larger gardens/ more (or less) sidewalk area). Brooklyn was the reference group for the borough variable because it has the largest amount of community gardens.  
+To understand how the presence of different types of trees differ across boroughs, a logistic regression was run for each tree type in the data set (trees in gardens, fruit trees, and street trees). The outcome was probablity of tree presence, and the predictor variable was borough. As there was no variable for garden size in the data set, sidewalk area was included as a confounder because it was the closest representation of garden size and would be associated with tree presence (more space is likely associated with tree presence) and borough (boroughs with more space likely have larger gardens/ more (or less) sidewalk area). Brooklyn was the reference group for the borough variable because it has the largest amount of community gardens.  
 
 ```{r logistic regression for presence of types of trees by borough, controlling for sidewalk area, message = FALSE, warnings=FALSE}
 fit_logistic_df =
