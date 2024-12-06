@@ -151,7 +151,7 @@ eco_friendly_df |>
 #logistic regression model for presence of eco-friendly practices by borough
 logistic_df =
   eco_friendly_df |>
-  select('rainharvesting', 'composting', 'aquaponics', 'solarpanels', 'borough') |>
+  select('rainharvesting', 'composting', 'solarpanels', 'borough') |>
   drop_na() |>
   mutate(
     borough = fct_relevel(borough, "Manhattan")
@@ -174,17 +174,6 @@ logistic_composting =
   glm(composting~ borough, data = _, family = binomial())  
 
 logistic_composting |> 
-  broom::tidy() |> 
-  mutate(OR = exp(estimate)) |>
-  select(term, log_OR = estimate, OR, p.value) |> 
-  knitr::kable(digits = 3)
-
-#Aquaponics
-logistic_aquaponics = 
-  logistic_df |>
-  glm(aquaponics~ borough, data = _, family = binomial())  
-
-logistic_aquaponics |> 
   broom::tidy() |> 
   mutate(OR = exp(estimate)) |>
   select(term, log_OR = estimate, OR, p.value) |> 
