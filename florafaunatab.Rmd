@@ -6,7 +6,7 @@ output:
     toc_float: true
     theme: lumen
 ---
-# **Plants and Animals in New York City's Gardens** 
+
 Community gardens provide many benefits to New York City and its residents. They provide an opportunity to escape from the chaos of the city and enter a serene space. Their trees and plants promote cleaner air, which is invaluable in a city with a large population and high levels of air pollution. Some gardens have animals such as chickens and fish (and turtles, like the ones pictured below at Ninth Street Community Garden at Avenue C). While they are a fun feature, they also serve as an opportunity for education and urban agriculture.
 
 <img src="./turtlesgardens.jpg" style="width:60%">
@@ -189,3 +189,4 @@ fit_logistic_streettrees =
 fit_logistic_streettrees
 ```
 
+The p-values for a majority of the coefficients comparing Brooklyn to the remaining four boroughs deemed them insignificant. The only significant finding at the 5% level (and its interpretation) was as follows: The odds of a fruit tree being present in a community garden in Queens was 0.202 times the odds of a fruit tree being present in a community gardens in Brooklyn, controlling for sidewalk area (p-value: 0.007). 
