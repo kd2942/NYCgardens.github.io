@@ -101,6 +101,9 @@ plot1 =  amenity_count %>%
 
 plot1
 ```
+
+
+
 It seems like food and an open lawn/communal area are the most popular types of garden amenities. Time to go have a picnic.
 
 
