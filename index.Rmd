@@ -1,5 +1,5 @@
 ---
-title: "Green Spaces in the Concrete Jungle:Community Gardens in NYC"
+title: "Green Spaces in the Concrete Jungle: Community Gardens in NYC"
 output: 
   html_document:
     toc: true
@@ -8,17 +8,33 @@ output:
 ---
 <img src="./gardenpic.jpg" style="width:75%">
 
-# About
+# **About**
 Info about gardens in NYC
+"Through this program we also promote urban agriculture, connect gardeners to resources in their communities, and help to identify supportive community and school gardening policies.
 
-# Our Project
+Urban agriculture is defined as growing food and raising animals in cities, accompanied by complementary activities such as processing and distributing food, collecting and reusing food waste and rainwater, and educating, organizing, and employing local residents. Some examples of urban agriculture include hydroponics, urban apiary, aquaponics, backyard chickens for egg production, and rooftop farming."
+
+# **Map of NYC Gardens**
+Garden map 
+
+# **Our Project**
 Details about what is on our site
 
-[Flora and Fauna](florafauna.html)
+[Flora and Fauna](florafaunatab.html)
 
 [Eco-Friendly Practices](ecofriendlytab.html)
 
 [Garden Amenities](gardenamenitiestab.html)
 
-# Site Creators
+# **Our Data Sources**
+_NYC Open Data_:
+[Garden Info](https://data.cityofnewyork.us/dataset/GreenThumb-Garden-Info/p78i-pat6/about_data) : This data set provides information about all active community gardens under the jurisdiction of NYC Parks. It informs maintenance and programming planning and confirms that parks are operating in accordance with their licensing requirements. 
+
+[Site Visits](https://data.cityofnewyork.us/Environment/GreenThumb-Site-Visits/xqbk-beh5/about_data) : Designated site visitors collect data about the community gardens during annual visits to confirm that they are operating in accordance with their licensing requirements. This data set is the result of their data collection. The data is also used to inform maintenance and programming planning.
+
+_Other sources_:
+[Urban Agriculture in NYC Community Gardens](https://agriculture.ny.gov/community-gardens-and-urban-agriculture)
+
+
+# **Site Creators**
 Link to a tab about us maybe?

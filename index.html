@@ -11,7 +11,7 @@
 
 
 
-<title>Green Spaces in the Concrete Jungle:Community Gardens in NYC</title>
+<title>Green Spaces in the Concrete Jungle: Community Gardens in NYC</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -221,6 +222,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -327,10 +331,10 @@ div.tocify {
   <a href="florafaunatab.html">Flora and Fauna</a>
 </li>
 <li>
-  <a href="ecofriendlytab.html">Eco-Friendly Practices</a>
+  <a href="gardenamenitiestab.html">Garden Amenities</a>
 </li>
 <li>
-  <a href="gardenamenitiestab.html">Garden Amenities</a>
+  <a href="ecofriendlytab.html">Eco-Friendly Practices</a>
 </li>
 <li>
   <a href="mailto:&lt;kd2942@cumc.columbia.edu&gt;">
@@ -351,28 +355,67 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Green Spaces in the Concrete
-Jungle:Community Gardens in NYC</h1>
+
+<h1 class="title toc-ignore">Green Spaces in the Concrete Jungle:
+Community Gardens in NYC</h1>
 
 </div>
 
 
 <p><img src="gardenpic.jpg" style="width:75%"></p>
 <div id="about" class="section level1">
-<h1>About</h1>
-<p>Info about gardens in NYC</p>
+<h1><strong>About</strong></h1>
+<p>Info about gardens in NYC “Through this program we also promote urban
+agriculture, connect gardeners to resources in their communities, and
+help to identify supportive community and school gardening policies.</p>
+<p>Urban agriculture is defined as growing food and raising animals in
+cities, accompanied by complementary activities such as processing and
+distributing food, collecting and reusing food waste and rainwater, and
+educating, organizing, and employing local residents. Some examples of
+urban agriculture include hydroponics, urban apiary, aquaponics,
+backyard chickens for egg production, and rooftop farming.”</p>
+</div>
+<div id="map-of-nyc-gardens" class="section level1">
+<h1><strong>Map of NYC Gardens</strong></h1>
+<p>Garden map</p>
 </div>
 <div id="our-project" class="section level1">
-<h1>Our Project</h1>
+<h1><strong>Our Project</strong></h1>
 <p>Details about what is on our site</p>
-<p><a href="florafauna.html">Flora and Fauna</a></p>
+<p><a href="florafaunatab.html">Flora and Fauna</a></p>
 <p><a href="ecofriendlytab.html">Eco-Friendly Practices</a></p>
 <p><a href="gardenamenitiestab.html">Garden Amenities</a></p>
 </div>
+<div id="our-data-sources" class="section level1">
+<h1><strong>Our Data Sources</strong></h1>
+<p><em>NYC Open Data</em>: <a
+href="https://data.cityofnewyork.us/dataset/GreenThumb-Garden-Info/p78i-pat6/about_data">Garden
+Info</a> : This data set provides information about all active community
+gardens under the jurisdiction of NYC Parks. It informs maintenance and
+programming planning and confirms that parks are operating in accordance
+with their licensing requirements.</p>
+<p><a
+href="https://data.cityofnewyork.us/Environment/GreenThumb-Site-Visits/xqbk-beh5/about_data">Site
+Visits</a> : Designated site visitors collect data about the community
+gardens during annual visits to confirm that they are operating in
+accordance with their licensing requirements. This data set is the
+result of their data collection. The data is also used to inform
+maintenance and programming planning.</p>
+<p><em>Other sources</em>: <a
+href="https://agriculture.ny.gov/community-gardens-and-urban-agriculture">Urban
+Agriculture in NYC Community Gardens</a></p>
+</div>
 <div id="site-creators" class="section level1">
-<h1>Site Creators</h1>
+<h1><strong>Site Creators</strong></h1>
 <p>Link to a tab about us maybe?</p>
 </div>
 
@@ -411,6 +454,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
