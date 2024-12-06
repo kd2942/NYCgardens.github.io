@@ -218,3 +218,48 @@ logistic_solarpanels =
 logistic_solarpanels
 ```
 
+```{r}
+logistic_df_tidy = logistic_df %>% filter(!(borough == "Staten Island"))
+cv_df <- crossv_mc(logistic_df_tidy, n = 100) %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble)
+  )
+
+# Add Logistic Models and Compute Accuracy
+cv_df_accuracy <- cv_df %>% 
+  mutate(
+    # Add pre-trained models
+    mod_rainharvesting = map(train, ~ glm(rainharvesting ~ borough, data = .x, family = binomial(), control = glm.control(maxit = 50))),
+    mod_composting = map(train, ~ glm(composting ~ borough, data = .x, family = binomial(), control = glm.control(maxit = 50))),
+    mod_aquaponics = map(train, ~ glm(aquaponics ~ borough, data = .x, family = binomial(), control = glm.control(maxit = 50))),
+    mod_solarpanels = map(train, ~ glm(solarpanels ~ borough, data = .x, family = binomial(), control = glm.control(maxit = 50)))
+  ) %>% 
+  mutate(
+    # Compute accuracy for each model and test set
+    rmse_rainharvesting  = map2_dbl(mod_rainharvesting, test, \(mod, df) rmse(model = mod, data = df)),
+    
+    rmse_composting = map2_dbl(mod_composting, test, \(mod, df) rmse(model = mod, data = df)),
+    
+    rmse_aquaponics = map2_dbl(mod_aquaponics, test, \(mod, df) rmse(model = mod, data = df)),
+    
+    rmse_solarpanels = map2_dbl(mod_solarpanels, test, \(mod, df) rmse(model = mod, data = df))
+  )
+
+
+residualsplot = cv_df_accuracy %>%  
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "model", 
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + geom_violin() +
+  labs(title = "RMSE Comparison of Logistic Models", y = "RMSE", x = "Model")
+
+ggplotly(residualsplot)
+
+
+```
+
