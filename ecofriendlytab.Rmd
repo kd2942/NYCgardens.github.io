@@ -128,8 +128,8 @@ map2 = leaflet(map_data) |>
   setView(
     lng = -74.006,  # Longitude of NYC center
     lat = 40.7128,  # Latitude of NYC center
-    zoom = 11      # Adjust zoom level (10–13 works well for NYC
-  ) |>
+    zoom = 11  # NYC zoom level
+    )|>
   addCircleMarkers(
     ~longitude, ~latitude,
     label = ~paste(garden_name, Location, practices),
@@ -137,7 +137,7 @@ map2 = leaflet(map_data) |>
     color = "green",
     radius = 6,
     fillOpacity = 0.8
-  )
+    )
 
 map2
 ```

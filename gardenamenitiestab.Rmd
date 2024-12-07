@@ -10,6 +10,7 @@ output:
       message: false
       warning: false
 ---
+<img src="./amenitypic3.jpg" style="width:80%">
 
 A visit to a NYC garden means you may get to experience food, open lawns, murals, farmer's markets, or ponds, among other things. How exciting!
 Before we take a deeper dive, let's take a look at which boroughs have the greatest numbers of garden amenities.
@@ -83,8 +84,8 @@ Brooklyn leads with the greatest number of garden amenities! Go Brooklyn!
 Let's check out how many gardens have each type of amenity.
 
 Here's a histogram of the number of gardens with each of the features: open lawn/communal area, murals, pond, farmer’s market, food.
-```{r}
-plot1 =  amenity_count %>% 
+```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
+plot1 = amenity_count %>% 
   mutate(Amenity = recode(Amenity,
                           "farmers_market" = "Farmer's Market",
                           "food" = "Food",
@@ -96,7 +97,7 @@ plot1 =  amenity_count %>%
   labs(title = "Number of Gardens by Type",
        x = "Amenity Type",
        y = "Total Number of Gardens") +
-  scale_fill_brewer(palette = "Pastel1") +
+  scale_fill_brewer(palette = "PRGn") +
   theme(panel.background = element_rect(fill = "transparent")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -127,14 +128,17 @@ plot2 = amenity_count_borough %>%
   geom_col(position = "dodge") +
   labs(x = "Number of Amenities", y = "Type of Amenity") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_brewer(palette = "Pastel2") +
+  scale_fill_brewer(palette = "PRGn") +
   theme(panel.background = element_rect(fill = "transparent"))
 
 
 ggplotly(plot2)
 ```
+
+
 Brooklyn leads in every garden amenity category, except for ponds. If you want to see a pond, go to Manhattan.
 
+<img src="./amenitypic1.jpg" style="width:80%">
 
 
 

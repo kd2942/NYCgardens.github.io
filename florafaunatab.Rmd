@@ -9,9 +9,9 @@ output:
 
 Community gardens provide many benefits to New York City and its residents. They provide an opportunity to escape from the chaos of the city and enter a serene space. Their trees and plants promote cleaner air, which is invaluable in a city with a large population and high levels of air pollution. Some gardens have animals such as chickens and fish (and turtles, like the ones pictured below at Ninth Street Community Garden at Avenue C). While they are a fun feature, they also serve as an opportunity for education and urban agriculture.
 
-<img src="./turtlesgardens.jpg" style="width:60%">
+<img src="./turtlesgardens.jpg" style="width:70%">
 
-# **Map of NYC Garden Flora and Fauna**
+## **Map of NYC Garden Flora and Fauna**
 Want to see some trees, chickens, or turtles? Check out this map to see which gardens in the city have what you're interested in! 
 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
@@ -92,7 +92,7 @@ map1 = leaflet(map_data) |>
   setView(
     lng = -74.006,  # Longitude of NYC center
     lat = 40.7128,  # Latitude of NYC center
-    zoom = 11      # Adjust zoom level (10–13 works well for NYC
+    zoom = 11      # NYC zoom level
   ) |>
   addCircleMarkers(
     ~longitude, ~latitude,
@@ -106,7 +106,7 @@ map1 = leaflet(map_data) |>
 map1
 ```
 
-# **Flora and Fauna by Borough**
+## **Flora and Fauna by Borough**
 Which borough has the most chickens in their community gardens? Are there more garden fruit trees in Manhattan or the Bronx? The multi-series bar chart allows for a comparison of the 5 boroughs through the flora and fauna present in their community gardens. 
 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
@@ -134,7 +134,7 @@ plot1 = ggplot(flora_fauna_tidy, aes(x = borough, y= total, fill=item)) +
 ggplotly(plot1)
 ```
 
-# **The Effect of Borough on Tree Presence**
+## **The Effect of Borough on Tree Presence**
 Among the 5 boroughs, there are varying amounts of space for community gardens. The benefits of features like trees, which promote clean air and provide shade, may not be equally distributed across the boroughs as a result. 
 
 To understand how the presence of different types of trees differ across boroughs, a logistic regression was run for each tree type in the data set (trees in gardens, fruit trees, and street trees). The outcome was probablity of tree presence, and the predictor variable was borough. As there was no variable for garden size in the data set, sidewalk area was included as a confounder because it was the closest representation of garden size and would be associated with tree presence (more space is likely associated with tree presence) and borough (boroughs with more space likely have larger gardens/ more (or less) sidewalk area). Brooklyn was the reference group for the borough variable because it has the largest amount of community gardens.  
@@ -150,7 +150,7 @@ fit_logistic_df =
   )
 ```
 
-## _Logistic Regression Model: Trees in the Garden_
+### _Logistic Regression Model: Trees in the Garden_
 ```{r}
 fit_logistic_treesingarden = 
   fit_logistic_df |>
@@ -163,7 +163,7 @@ fit_logistic_treesingarden =
 fit_logistic_treesingarden
 ```
 
-## _Logistic Regression Model: Fruit Trees_
+### _Logistic Regression Model: Fruit Trees_
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_fruittrees = 
   fit_logistic_df |>
@@ -176,7 +176,7 @@ fit_logistic_fruittrees =
 fit_logistic_fruittrees
 ```
 
-## _Logistic Regression Model: Street Trees_
+### _Logistic Regression Model: Street Trees_
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_streettrees = 
   fit_logistic_df |>
