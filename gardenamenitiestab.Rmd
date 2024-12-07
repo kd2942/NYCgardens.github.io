@@ -116,7 +116,7 @@ It seems like food and an open lawn/communal area are the most popular types of 
 
 ## Garden Amenities Distribution by Borough
 Have you ever wondered which boroughs have the most garden amenities? We certainly did!
-Here is a histogram showing us the count of each amenity we can find in every borough.
+Here is a histogram showing the count of each amenity we can find in every borough.
 ```{r}
 
 plot2 = amenity_count_borough %>%
@@ -201,7 +201,7 @@ plot3 = income_borough %>%
 ggplotly(plot3)
 ```
 
-Manhattan has the greatest median income, while Bronx has the least. This will come in handy when we are analyzing how income is associated with garden amenities....
+Manhattan has the greatest median income, while Bronx has the least. This will come in handy when analyzing how income is associated with garden amenities....
 
 
 
@@ -209,7 +209,7 @@ Manhattan has the greatest median income, while Bronx has the least. This will c
 
 ## Poisson analysis
 ### Looking at total amenities per borough and median income.
-We ran a Poisson regression model to investigate how median borough income might associate with the total number of amenities available in each borough. Our odds ratio of 1 shows that, to our surprise, median income may not have much of an effect of the number of amenities available in each borough. From an equity standpoint, this could be good news; lower income may not directly result in fewer garden amenities. 
+A Poisson regression model was run to investigate how median borough income might associate with the total number of amenities available in each borough. The odds ratio of 1 shows that, surprisingly, median income may not have much of an effect of the number of amenities available in each borough. From an equity standpoint, this could be good news; lower income may not directly result in fewer garden amenities. 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #POISSON ANALYSIS
 #isolating total amenities per borough
@@ -234,9 +234,9 @@ table2
 
 
 ## Multinomial Regression
-In our multinomial regression below, we evaluated median income, borough and garden status (an active GreenThumb garden or not a GreenThumb garden; as a reminder, GreenThumb is a garden maintenance program).
+In the multinomial regression below, median income, borough and garden status were evaluated (an active GreenThumb garden or not a GreenThumb garden; as a reminder, GreenThumb is a garden maintenance program).
 
-We found that being in the GreenThumb program significantly decreases the odds of having garden ponds compared to those not in the program. Gardens in Manhattan and Brooklyn have higher odds of having ponds compared to other boroughs, while median income does not significantly influence the presence of garden ponds. Gardens in Queens have slightly lower odds of having garden ponds, but this difference is not statistically significant.
+It was found that being in the GreenThumb program significantly decreases the odds of having garden ponds compared to those not in the program. Gardens in Manhattan and Brooklyn have higher odds of having ponds compared to other boroughs, while median income does not significantly influence the presence of garden ponds. Gardens in Queens have slightly lower odds of having garden ponds, but this difference is not statistically significant.
 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE, echo=FALSE}
 

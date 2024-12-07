@@ -6,7 +6,11 @@ output:
     toc_float: true
     theme: lumen
 ---
-<img src="./gardenpic.jpg" style="width:75%">
+
+<div style="text-align: center;">
+  <img src="./gardenpic.jpg" style="width:85%">
+</div>
+
 
 ## **About**
 New York City's community gardens offer an escape from the hustle and bustle of the city. The majority of gardens were originally abandoned lots that were turned into gardens by volunteers so communities could have a space to socialize, relax, learn, and participate in urban agriculture. They are typically managed by neighborhood residents and provide invaluable open space. They provide a variety of social, economic, and environmental benefits to their communities. They are also an opportunity for education for students and community members alike. Overall, community gardens are an invaluable feature of NYC, offering much-needed green spaces, improving air quality, and contributing to the well-being of its residents!

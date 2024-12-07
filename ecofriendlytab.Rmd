@@ -278,3 +278,4 @@ ggplotly(residualsplot)
 
 ```
 
+To confirm the theory about aquaponics models, a residuals analysis was  through violin plots. Aquaponics has the greatest residuals of all the models, indicating poor model fit compared to rain harvesting, composting and solar panels. Rain harvesting and composting have the best model fit.
