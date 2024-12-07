@@ -301,7 +301,7 @@ $(document).ready(function () {
 
 <pre class="r"><code>gardeninfo = read_csv(&quot;./GreenThumb_Garden_Info.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 629 Columns: 27
-## ── Column specification ──────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (16): address, borough, gardenname, juris, multipolygon, openhrsf, openh...
 ## dbl (11): assemblydist, communityboard, congressionaldist, coundist, policep...
@@ -310,7 +310,7 @@ $(document).ready(function () {
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>gardenamenities = read_csv(&quot;./GreenThumb_Site_Visits.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 357 Columns: 35
-## ── Column specification ──────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (1): ParksID
 ## dbl  (5): InspectionID, TotalFenceLength, TotalSidewalkArea, TotalSidewalkLe...
@@ -318,7 +318,7 @@ $(document).ready(function () {
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>info_tidy = gardeninfo %&gt;% select(borough, gardenname, parksid, zipcode, congressionaldist) %&gt;% 
+<pre class="r"><code>info_tidy = gardeninfo %&gt;% select(borough, gardenname, parksid, status, juris) %&gt;% 
   mutate(borough = recode(borough,
                           &quot;B&quot; = &quot;Brooklyn&quot;,
                           &quot;X&quot; = &quot;Bronx&quot;,
@@ -332,8 +332,8 @@ garden_merged = full_join(amenities_tidy, info_tidy, by= &quot;parksid&quot;) </
 <pre><code>## Warning in full_join(amenities_tidy, info_tidy, by = &quot;parksid&quot;): Detected an unexpected many-to-many relationship between `x` and `y`.
 ## ℹ Row 127 of `x` matches multiple rows in `y`.
 ## ℹ Row 169 of `y` matches multiple rows in `x`.
-## ℹ If a many-to-many relationship is expected, set `relationship = &quot;many-to-many&quot;`
-##   to silence this warning.</code></pre>
+## ℹ If a many-to-many relationship is expected, set `relationship =
+##   &quot;many-to-many&quot;` to silence this warning.</code></pre>
 <pre class="r"><code>#removing duplicates
 info_tidy %&gt;% select(parksid) %&gt;% duplicated()</code></pre>
 <pre><code>##   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
@@ -417,8 +417,8 @@ info_tidy %&gt;% select(parksid) %&gt;% duplicated()</code></pre>
 ## 7 BGT038  NA                     NA     NA             NA    NA               NA
 ## 8 BGT038  NA                     NA     NA             NA    NA               NA
 ## # ℹ abbreviated name: ¹​open_lawn_or_communal_area
-## # ℹ 4 more variables: borough &lt;chr&gt;, gardenname &lt;chr&gt;, zipcode &lt;dbl&gt;,
-## #   congressionaldist &lt;dbl&gt;</code></pre>
+## # ℹ 4 more variables: borough &lt;chr&gt;, gardenname &lt;chr&gt;, status &lt;chr&gt;,
+## #   juris &lt;chr&gt;</code></pre>
 <pre class="r"><code>garden_merged = garden_merged[!duplicated(garden_merged), ]
 
 
@@ -489,7 +489,7 @@ plot2</code></pre>
 
 income = read_csv(&quot;./censusincome2024.csv&quot;) %&gt;% janitor::clean_names()</code></pre>
 <pre><code>## Rows: 47 Columns: 37
-## ── Column specification ──────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (34): Label (Grouping), Bronx County, New York!!Number!!Estimate, Bronx ...
 ## num  (3): Kings County, New York!!Median income (dollars)!!Estimate, Queens ...
@@ -555,7 +555,60 @@ poisson_model &lt;- glm(total_amenities ~ median_income,
                      family = poisson(link = &quot;log&quot;), 
                      data = poisson_df)
 
-table2 = summary(poisson_model)</code></pre>
+table2 = poisson_model %&gt;% broom::tidy() |&gt; 
+  mutate(OR = exp(estimate)) |&gt;
+  select(term, log_OR = estimate, OR, p.value) |&gt; 
+  knitr::kable()
+
+table2</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">log_OR</th>
+<th align="right">OR</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">5.6508878</td>
+<td align="right">284.5439597</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">median_income</td>
+<td align="right">-0.0000092</td>
+<td align="right">0.9999908</td>
+<td align="right">0.0000013</td>
+</tr>
+</tbody>
+</table>
+<p>Multinomial Regression</p>
+<pre class="r"><code>#multinom_df = left_join(garden_merged, income_borough, by=&quot;borough&quot;) %&gt;% select(parksid, pond, status, juris, borough, median_income) %&gt;% 
+  #filter(juris == &quot;DPR&quot;) %&gt;% 
+  #filter(status == &quot;Active&quot; | status == &quot;Not GreenThumb&quot;) %&gt;%
+  #filter(!(borough == &quot;Staten Island&quot;)) %&gt;% 
+  #mutate(pond = ifelse(pond, &quot;Yes&quot;, &quot;No&quot;)) %&gt;% 
+  #mutate(status = fct_relevel(status, &quot;Not GreenThumb&quot;)) %&gt;% 
+  #mutate(borough = fct_relevel(borough, &quot;Bronx&quot;)) %&gt;% 
+  #drop_na()
+
+#multinom_df %&gt;% select(status, juris)  %&gt;% group_by(status) %&gt;% count() 
+#multinom_df %&gt;% group_by(borough, pond) %&gt;% count() 
+
+
+#multinom_model = multinom(pond ~ status + median_income + borough, data = multinom_df)
+
+
+#table3 = multinom_model %&gt;% broom::tidy() |&gt; 
+  #mutate(OR = exp(estimate)) |&gt;
+  #select(term, log_OR = estimate, OR, p.value) |&gt; 
+  #knitr::kable()
+
+
+#table3</code></pre>
 
 
 

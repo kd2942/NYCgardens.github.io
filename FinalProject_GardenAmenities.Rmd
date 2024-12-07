@@ -12,8 +12,8 @@ library(ggplot2)
 library(stringr)
 library(httr)
 library(plotly)
-install.packages("nnet")
-library(nnet)
+#install.packages("nnet")
+#library(nnet)
 library(boot)
 library(modelr)
 library(mgcv)
@@ -198,29 +198,29 @@ table2
 
 
 Multinomial Regression
-```{r}
-multinom_df = left_join(garden_merged, income_borough, by="borough") %>% select(parksid, pond, status, juris, borough, median_income) %>% 
-  filter(juris == "DPR") %>% 
-  filter(status == "Active" | status == "Not GreenThumb") %>%
-  filter(!(borough == "Staten Island")) %>% 
-  mutate(pond = ifelse(pond, "Yes", "No")) %>% 
-  mutate(status = fct_relevel(status, "Not GreenThumb")) %>% 
-  mutate(borough = fct_relevel(borough, "Bronx")) %>% 
-  drop_na()
+```{r, evaluate = FALSE}
+#multinom_df = left_join(garden_merged, income_borough, by="borough") %>% select(parksid, pond, status, juris, borough, median_income) %>% 
+  #filter(juris == "DPR") %>% 
+  #filter(status == "Active" | status == "Not GreenThumb") %>%
+  #filter(!(borough == "Staten Island")) %>% 
+  #mutate(pond = ifelse(pond, "Yes", "No")) %>% 
+  #mutate(status = fct_relevel(status, "Not GreenThumb")) %>% 
+  #mutate(borough = fct_relevel(borough, "Bronx")) %>% 
+  #drop_na()
 
-multinom_df %>% select(status, juris)  %>% group_by(status) %>% count() 
-multinom_df %>% group_by(borough, pond) %>% count() 
-
-
-multinom_model = multinom(pond ~ status + median_income + borough, data = multinom_df)
+#multinom_df %>% select(status, juris)  %>% group_by(status) %>% count() 
+#multinom_df %>% group_by(borough, pond) %>% count() 
 
 
-table3 = multinom_model %>% broom::tidy() |> 
-  mutate(OR = exp(estimate)) |>
-  select(term, log_OR = estimate, OR, p.value) |> 
-  knitr::kable()
+#multinom_model = multinom(pond ~ status + median_income + borough, data = multinom_df)
 
 
-table3
+#table3 = multinom_model %>% broom::tidy() |> 
+  #mutate(OR = exp(estimate)) |>
+  #select(term, log_OR = estimate, OR, p.value) |> 
+  #knitr::kable()
+
+
+#table3
 ```
 
