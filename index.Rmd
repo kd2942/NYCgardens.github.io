@@ -108,8 +108,12 @@ Want to visit a garden near you? Take a look at our page on [Garden Amenities](g
 
 [NYC Parks Green Thumb](https://www.nycgovparks.org/greenthumb/)
 
-<img src="./amenitypic2.jpg" style="width:75%">
+<div style="text-align: center;">
+  <img src="./amenitypic2.jpg" style="width:75%">
+</div>
 
 ## **Site Creators**
 Kaylin De Silva (kd2942), Cristina Varela (cev2129), Alishah Khan (ak5098)
 
+## **Screencast**
+Check out this recording for a description of our project: [recording link](https://youtu.be/ZW8OOX3jkNM)

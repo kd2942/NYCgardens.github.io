@@ -14,12 +14,15 @@ Community gardens in NYC can remain eco-friendly by participating in practices l
   <img src="./rainharvesting.jpg" style="width:50%"> 
 </div>
 
-_Composting_: recycling food waste or other organic material and making it into a fertilizer to reduce landfill waste and improve the quality of soil
-Rain Harvesting: harvesting rainwater and using it to water plants 
+### _Types of Eco-Friendly Practices_
 
-_Aquaponics_: An aquaculture technique in which fish waste supplies nutrients for soil-less plants, which in turn purify the water for the fish.
+**Composting**: Recycling food waste or other organic material and making it into a fertilizer to reduce landfill waste and improve the quality of soil.
 
-_Solar panels_: Collect solar energy to power electricity in order to reduce greenhouse gas emissions and promote air quality. 
+**Rain Harvesting**: Harvesting rainwater and using it to water plants.
+
+**Aquaponics**: An aquaculture technique in which fish waste supplies nutrients for soil-less plants, which in turn purify the water for the fish.
+
+**Solar panels**: Collect solar energy to power electricity in order to reduce greenhouse gas emissions and promote air quality. 
 
 ## **Overall Distribution of Eco-Friendly Practices Across Boroughs**
 How does the spread of eco-friendly practices differ by borough? Check out the histogram below to learn more! 
