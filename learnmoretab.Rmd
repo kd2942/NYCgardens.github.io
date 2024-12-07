@@ -2,10 +2,9 @@
 title: "Learn More"
 output: html_document
 ---
-## Related Work
-
-We were inspired by the efforts to maintain the [BedStuy Aquarium]
-(https://www.bedstuyaquarium.com/), a makeshift aquarium that started with a leaky fire hydrant, until it was shut down in October. Despite this community pond sadly being shut down by the NYC government, we wanted to remind everyone there are still several gardens with ponds and fish available for public enjoyment!
+<div style="text-align: center;">
+  <img src="./meme.jpeg" style="width:30%">
+</div>
 
 ## Initial Questions
 Flora and fauna: Are gardens in specific boroughs more likely to have various types of trees (street trees, trees in gardens, fruit trees) than others, controlling for sidewalk area? 
@@ -62,3 +61,11 @@ The insights  reflect the need to address geographical disparities in eco-friend
 Additionally, our exploration of the gardens’ data not only amplifies awareness of existing green spaces but also emphasizes the potential for these areas to serve as catalysts for environmental change. By documenting and promoting eco-friendly practices in gardens, we can empower NYC residents to enhance their engagement with these valuable resources, leading to broader community benefits for both the environment and public health.
 
 In conclusion, our findings suggest that while certain boroughs lead in specific eco-friendly practices, there remains room for growth in promoting sustainability across all regions of NYC. Future studies may further explore the factors influencing these practices and examine how targeted outreach can enhance eco-friendly engagement citywide.
+
+## Related Work
+We were inspired by the efforts to maintain the [BedStuy Aquarium]
+(https://www.bedstuyaquarium.com/), a makeshift aquarium that started with a leaky fire hydrant, until it was shut down in October. Despite this community pond sadly being shut down by the NYC government, we wanted to remind everyone there are still several gardens with ponds and fish available for public enjoyment!
+
+<div style="text-align: center;">
+  <img src="./bedstuy.jpg" style="width:60%">
+</div>

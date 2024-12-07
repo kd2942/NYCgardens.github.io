@@ -297,15 +297,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="related-work" class="section level2">
-<h2>Related Work</h2>
-<p>We were inspired by the efforts to maintain the [BedStuy Aquarium]
-(<a href="https://www.bedstuyaquarium.com/"
-class="uri">https://www.bedstuyaquarium.com/</a>), a makeshift aquarium
-that started with a leaky fire hydrant, until it was shut down in
-October. Despite this community pond sadly being shut down by the NYC
-government, we wanted to remind everyone there are still several gardens
-with ponds and fish available for public enjoyment!</p>
+<div style="text-align: center;">
+<p><img src="meme.jpeg" style="width:30%"></p>
 </div>
 <div id="initial-questions" class="section level2">
 <h2>Initial Questions</h2>
@@ -449,7 +442,14 @@ exhibited the highest likelihood of rain harvesting, with an odds ratio
 of 2.10 (p = 0.04). Gardens in Manhattan were most likely to engage in
 composting, with an odds ratio of 5.30 (p = 0.00), while the use of
 solar panels had an odds ratio of 0.667; however, this association was
-not significant, as the p-value exceeded 0.05.</p>
+not significant, as the p-value exceeded 0.05. We did not include
+aquaponics in our logistic regressions because only n=2 gardens utilized
+aquaponics, which resulted in a very small sample size that could skew
+models. To confirm our theory about aquaponics models, we conducted a
+residuals analysis through violin plots. Aquaponics has the greatest
+residuals of all the models, indicating poor model fit compared to rain
+harvesting, composting and solar panels. Rain harvesting and composting
+have the best model fit.</p>
 <p><em>Garden amenities</em>: We used a Poisson analysis to assess the
 association between total amenities per borough and median income by
 borough. This analysis was run to determine whether income by borough
@@ -580,6 +580,19 @@ in specific eco-friendly practices, there remains room for growth in
 promoting sustainability across all regions of NYC. Future studies may
 further explore the factors influencing these practices and examine how
 targeted outreach can enhance eco-friendly engagement citywide.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related Work</h2>
+<p>We were inspired by the efforts to maintain the [BedStuy Aquarium]
+(<a href="https://www.bedstuyaquarium.com/"
+class="uri">https://www.bedstuyaquarium.com/</a>), a makeshift aquarium
+that started with a leaky fire hydrant, until it was shut down in
+October. Despite this community pond sadly being shut down by the NYC
+government, we wanted to remind everyone there are still several gardens
+with ponds and fish available for public enjoyment!</p>
+<div style="text-align: center;">
+<p><img src="bedstuy.jpg" style="width:60%"></p>
+</div>
 </div>
 
 
