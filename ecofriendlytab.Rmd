@@ -24,7 +24,6 @@ library(crosstalk)
 library(rvest)
 library(httr)
 library(plotly)
-library(cvTools)
 library(modelr)
 library(mgcv)
 
