@@ -9,14 +9,15 @@ output:
 
 Community gardens in NYC can remain eco-friendly by participating in practices like composting, aquaponics, rain harvesting, and solar panels. This also provides an opportunity for community members and educational programs to participate in these practices and learn more about agricultural activities that support renewable waste and energy. These practices are another important aspect of urban agriculture and further emphasize the value of community gardens. 
 
-They are defined as follows: 
-_Composting_: recycling food waste or other organic material and making it into a fertilizer to reduce landfill waste and improve the quality of soil
-Rain Harvesting: harvesting rainwater and using it to water plants 
-_Aquaponics_: An aquaculture technique in which fish waste supplies nutrients for soil-less plants, which in turn purify the water for the fish.
-_Solar panels_: Collect solar energy to power electricity in order to reduce greenhouse gas emissions and promote air quality. 
-
 <img src="./solarpanels2.jpg" style="width:40%"> 
 <img src="./rainharvesting.jpg" style="width:50%"> 
+
+_Composting_: recycling food waste or other organic material and making it into a fertilizer to reduce landfill waste and improve the quality of soil
+Rain Harvesting: harvesting rainwater and using it to water plants 
+
+_Aquaponics_: An aquaculture technique in which fish waste supplies nutrients for soil-less plants, which in turn purify the water for the fish.
+
+_Solar panels_: Collect solar energy to power electricity in order to reduce greenhouse gas emissions and promote air quality. 
 
 ## **Overall Distribution of Eco-Friendly Practices Across Boroughs**
 How does the spread of eco-friendly practices differ by borough? Check out the histogram below to learn more! 
