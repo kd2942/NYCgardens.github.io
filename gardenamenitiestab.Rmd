@@ -99,7 +99,7 @@ plot1 = amenity_count %>%
   labs(title = "Number of Gardens by Type",
        x = "Amenity Type",
        y = "Total Number of Gardens") +
-  scale_fill_brewer(palette = "PRGn") +
+  scale_fill_brewer(palette = "RdYlBu") +
   theme(panel.background = element_rect(fill = "transparent")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -130,7 +130,7 @@ plot2 = amenity_count_borough %>%
   geom_col(position = "dodge") +
   labs(x = "Number of Amenities", y = "Type of Amenity") + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_brewer(palette = "PRGn") +
+  scale_fill_brewer(palette = "RdYlBu") +
   theme(panel.background = element_rect(fill = "transparent"))
 
 
