@@ -9,7 +9,16 @@ output:
 
 Community gardens in NYC can remain eco-friendly by participating in practices like composting, aquaponics, rain harvesting, and solar panels. This also provides an opportunity for community members and educational programs to participate in these practices and learn more about agricultural activities that support renewable waste and energy. These practices are another important aspect of urban agriculture and further emphasize the value of community gardens. 
 
-# **Overall Distribution of Eco-Friendly Practices Across Boroughs**
+They are defined as follows: 
+_Composting_: recycling food waste or other organic material and making it into a fertilizer to reduce landfill waste and improve the quality of soil
+Rain Harvesting: harvesting rainwater and using it to water plants 
+_Aquaponics_: An aquaculture technique in which fish waste supplies nutrients for soil-less plants, which in turn purify the water for the fish.
+_Solar panels_: Collect solar energy to power electricity in order to reduce greenhouse gas emissions and promote air quality. 
+
+<img src="./solarpanels2.jpg" style="width:40%"> 
+<img src="./rainharvesting.jpg" style="width:50%"> 
+
+## **Overall Distribution of Eco-Friendly Practices Across Boroughs**
 How does the spread of eco-friendly practices differ by borough? Check out the histogram below to learn more! 
 
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE }
@@ -94,7 +103,7 @@ plot2 = ggplot(eco_friendly_tidy, aes(x = borough, y = Count, fill = Practice)) 
 ggplotly(plot2)
 ``` 
 
-# **Map of Community Gardens with Eco-Friendly Practices**
+## **Map of Community Gardens with Eco-Friendly Practices**
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 #Interactive Map: Gardens of NYC  
 map_data <- eco_friendly_df |>
@@ -134,11 +143,11 @@ map2
 ```
 
 
-# **Statistical Analyses: The Association between Borough and Eco-Friendly Practices**
+## **Statistical Analyses: The Association between Borough and Eco-Friendly Practices**
 
 Statistical analyses included a chi-Square test of independence to examine the association between borough and the presence of eco-friendly practices, complemented by several logistic regression analyses to model the probability of a garden engaging in eco-friendly practices based on its borough. 
 
-## _Chi-Square Test of independence on association between borough and presence of eco-friendly practices_
+### _Chi-Square Test of independence on association between borough and presence of eco-friendly practices_
 
 A Chi-Square test of independence was conducted to investigate the association between borough and the presence of eco-friendly practices, aiming to determine whether the presence of these practices in a garden was independent of its borough. It was hypothesized that there would be a strong association between gardens practicing eco-friendly practices and borough. The results (X^2 = 153.11, p-value < 2.2e-16) indicate a strong association between eco-friendly gardens and the boroughs they are located in. 
 
@@ -167,7 +176,7 @@ table7
 
 To further investigate, several logistic regression analyses were performed to model the probability of each eco-friendly practice being used by gardens based on the borough they are located in. It was hypothesized that there is an association between borough and gardens with eco-friendly practices. The specific findings for each analysis is as follows:  
 
-## _Logistic Regression Analyses modeling probability of a garden engaging in rain harvesting based on borough_
+### _Logistic Regression Analyses modeling probability of a garden engaging in rain harvesting based on borough_
 
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #logistic regression model for presence of eco-friendly practices by borough
@@ -192,7 +201,7 @@ logistic_rainharvesting =
 logistic_rainharvesting
 ``` 
 
-## _Logistic Regression Analyses modeling probability of a garden engaging in composting based on borough_
+### _Logistic Regression Analyses modeling probability of a garden engaging in composting based on borough_
 
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Composting 
@@ -207,7 +216,7 @@ logistic_composting =
 logistic_composting
 ```
 
-## _Logistic Regression Analyses modeling probability of a garden engaging in solar panels based on borough_
+### _Logistic Regression Analyses modeling probability of a garden engaging in solar panels based on borough_
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Solarpanels 
 logistic_solarpanels = 
@@ -220,6 +229,8 @@ logistic_solarpanels =
 
 logistic_solarpanels
 ```
+
+The findings indicated that gardens in Brooklyn were most likely to implement rain harvesting, with an odds ratio of 2.10 (p = 0.04). In Manhattan, gardens showed a strong inclination towards composting, with an odds ratio of 5.30 (p = 0.00). However, the use of solar panels had an odds ratio of 0.667, which was not statistically significant, as indicated by a p-value greater than 0.05. Aquaponics and Staten Island were excluded from the logistic regression models as Staten Island only had three gardens, not enough gardens in New York City engaged in aquaponics. 
 
 ```{r}
 logistic_df_tidy = logistic_df %>% filter(!(borough == "Staten Island"))
