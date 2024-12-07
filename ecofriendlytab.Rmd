@@ -139,7 +139,7 @@ map2
 
 Statistical analyses included a chi-Square test of independence to examine the association between borough and the presence of eco-friendly practices, complemented by several logistic regression analyses to model the probability of a garden engaging in eco-friendly practices based on its borough. 
 
-# _Chi-Square Test of independence on association between borough and presence of eco-friendly practices_
+## _Chi-Square Test of independence on association between borough and presence of eco-friendly practices_
 
 A Chi-Square test of independence was conducted to investigate the association between borough and the presence of eco-friendly practices, aiming to determine whether the presence of these practices in a garden was independent of its borough. It was hypothesized that there would be a strong association between gardens practicing eco-friendly practices and borough. The results (X^2 = 153.11, p-value < 2.2e-16) indicate a strong association between eco-friendly gardens and the boroughs they are located in. 
 
@@ -168,7 +168,7 @@ table7
 
 To further investigate, several logistic regression analyses were performed to model the probability of each eco-friendly practice being used by gardens based on the borough they are located in. It was hypothesized that there is an association between borough and gardens with eco-friendly practices. The specific findings for each analysis is as follows:  
 
-# _Logistic Regression Analyses modeling probability of a garden engaging in rain harvesting based on borough_
+## _Logistic Regression Analyses modeling probability of a garden engaging in rain harvesting based on borough_
 
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #logistic regression model for presence of eco-friendly practices by borough
@@ -193,7 +193,7 @@ logistic_rainharvesting =
 logistic_rainharvesting
 ``` 
 
-# _Logistic Regression Analyses modeling probability of a garden engaging in composting based on borough_
+## _Logistic Regression Analyses modeling probability of a garden engaging in composting based on borough_
 
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Composting 
@@ -208,7 +208,7 @@ logistic_composting =
 logistic_composting
 ```
 
-# _Logistic Regression Analyses modeling probability of a garden engaging in solar panels based on borough_
+## _Logistic Regression Analyses modeling probability of a garden engaging in solar panels based on borough_
 ```{r, message = FALSE, warning = FALSE, fig.keep=TRUE}
 #Solarpanels 
 logistic_solarpanels = 

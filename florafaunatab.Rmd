@@ -150,7 +150,7 @@ fit_logistic_df =
   )
 ```
 
-# _Logistic Regression Model: Trees in the Garden_
+## _Logistic Regression Model: Trees in the Garden_
 ```{r}
 fit_logistic_treesingarden = 
   fit_logistic_df |>
@@ -163,7 +163,7 @@ fit_logistic_treesingarden =
 fit_logistic_treesingarden
 ```
 
-# _Logistic Regression Model: Fruit Trees_
+## _Logistic Regression Model: Fruit Trees_
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_fruittrees = 
   fit_logistic_df |>
@@ -176,7 +176,7 @@ fit_logistic_fruittrees =
 fit_logistic_fruittrees
 ```
 
-# _Logistic Regression Model: Street Trees_
+## _Logistic Regression Model: Street Trees_
 ```{r, message=FALSE, warnings=FALSE, fig.keep=TRUE}
 fit_logistic_streettrees = 
   fit_logistic_df |>
