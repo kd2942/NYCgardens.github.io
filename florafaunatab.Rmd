@@ -9,7 +9,9 @@ output:
 
 Community gardens provide many benefits to New York City and its residents. They provide an opportunity to escape from the chaos of the city and enter a serene space. Their trees and plants promote cleaner air, which is invaluable in a city with a large population and high levels of air pollution. Some gardens have animals such as chickens and fish (and turtles, like the ones pictured below at Ninth Street Community Garden at Avenue C). While they are a fun feature, they also serve as an opportunity for education and urban agriculture.
 
-<img src="./turtlesgardens.jpg" style="width:70%">
+<div style="text-align: center;">
+  <img src="./turtlesgardens.jpg" style="width:60%">
+</div>
 
 ## **Map of NYC Garden Flora and Fauna**
 Want to see some trees, chickens, or turtles? Check out this map to see which gardens in the city have what you're interested in! 

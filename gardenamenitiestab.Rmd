@@ -10,7 +10,9 @@ output:
       message: false
       warning: false
 ---
-<img src="./amenitypic3.jpg" style="width:80%">
+<div style="text-align: center;">
+  <img src="./amenitypic3.jpg" style="width:80%">
+</div>
 
 A visit to a NYC garden means you may get to experience food, open lawns, murals, farmer's markets, or ponds, among other things. How exciting!
 Before we take a deeper dive, let's take a look at which boroughs have the greatest numbers of garden amenities.
@@ -138,8 +140,9 @@ ggplotly(plot2)
 
 Brooklyn leads in every garden amenity category, except for ponds. If you want to see a pond, go to Manhattan.
 
-<img src="./amenitypic1.jpg" style="width:80%">
-
+<div style="text-align: center;">
+  <img src="./amenitypic1.jpg" style="width:80%">
+</div>
 
 
 
